@@ -18,5 +18,10 @@ namespace EPS.Administration.Models.Account
         /// Password for the user
         /// </summary>
         public string Password { get; set; }
+
+        public void TruncateSecretData()
+        {
+            Password = null;
+        }
     }
 }
