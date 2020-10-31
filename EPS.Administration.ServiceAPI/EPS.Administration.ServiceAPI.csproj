@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EPS.Administration.Controllers\EPS.Administration.Controllers.csproj" />
     <ProjectReference Include="..\EPS.Administration.Models\EPS.Administration.Models.csproj" />
   </ItemGroup>
 

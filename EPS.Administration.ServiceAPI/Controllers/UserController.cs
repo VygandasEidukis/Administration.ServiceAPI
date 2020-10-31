@@ -27,7 +27,10 @@ namespace EPS.Administration.ServiceAPI.Controllers
             var user = await _userService.Authenticate(model.Username, model.Password);
 
             if (user == null)
+            {
+                //TODO: MEDIUM Add logging.
                 return BadRequest(new { message = "Username or password is incorrect" });
+            }
 
             return Ok(user);
         }
