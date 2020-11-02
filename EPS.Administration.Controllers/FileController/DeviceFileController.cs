@@ -1,4 +1,5 @@
-﻿using EPS.Administration.Models.Exceptions;
+﻿using EPS.Administration.Models.Device;
+using EPS.Administration.Models.Exceptions;
 using ExcelDataReader;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,14 @@ using System.Threading.Tasks;
 
 namespace EPS.Administration.Controllers.FileController
 {
-    public class ExtenderFileController
+    public class DeviceFileController
     {
         private Stream _stream;
-
-        public ExtenderFileController(Stream stream)
+        private Dictionary<string, List<Device>> _devices;
+        public DeviceFileController(Stream stream)
         {
             this._stream = stream;
+            this._devices = new Dictionary<string, List<Device>>();
         }
 
         public Task ProcessFile()
@@ -36,22 +38,27 @@ namespace EPS.Administration.Controllers.FileController
                 {
                     while(excel.Read())
                     {
-                        var values = Enum.GetValues(typeof(FileDataFlag))
-                                            .OfType<FileDataFlag>()
-                                            .Where(x=> x != FileDataFlag.EOF && x != FileDataFlag.Registras)
+                        var values = Enum.GetValues(typeof(DeviceDataFlag))
+                                            .OfType<DeviceDataFlag>()
+                                            .Where(x=> x != DeviceDataFlag.EOF && x != DeviceDataFlag.Registras)
                                             .Select(x => x.ToString().ToUpper())
                                             .ToList();
 
                         var selector = values.FirstOrDefault(x => excel.GetString(1) != null && excel.GetString(1).ToUpper().Contains(x));
                         if (selector != null)
                         {
-                            var currnetFlag = Enum.GetValues(typeof(FileDataFlag))
-                                            .OfType<FileDataFlag>()
+                            var currnetFlag = Enum.GetValues(typeof(DeviceDataFlag))
+                                            .OfType<DeviceDataFlag>()
                                             .FirstOrDefault(x => x.ToString().ToUpper() == selector);
 
                             var porpertyList = ReadProperty(excel);
                             AddProperties(currnetFlag, porpertyList);
+                        }else if (excel.GetString(1) != null && excel.GetString(1).ToUpper().Contains(DeviceDataFlag.Registras.ToString().ToUpper()))
+                        {
+                            Skip(excel, 5);
+                            ReadRevisions(excel);
                         }
+
                     }
                 }
             }
@@ -67,7 +74,7 @@ namespace EPS.Administration.Controllers.FileController
         {
             Skip(excel, 2);
             var propertyList = new List<Tuple<string, string>>();
-            while(excel.Read() && excel.GetString(1)?.ToUpper() != FileDataFlag.EOF.ToString())
+            while(excel.Read() && excel.GetString(1)?.ToUpper() != DeviceDataFlag.EOF.ToString())
             {
                 string Key = excel.GetString(1);
                 string Value = excel.GetString(2);
@@ -84,6 +91,24 @@ namespace EPS.Administration.Controllers.FileController
             return propertyList;
         }
 
+        private void ReadRevisions (IExcelDataReader excel)
+        {
+            while(excel.Read() && excel.GetString(3) != null)
+            {
+                var device = new Device();
+
+                try
+                {
+
+                }catch
+                {
+                    //TODO: HIGH add logging
+                    throw new AdministrationException($"Failed to parse the device {excel.GetString(3)}");
+                }
+
+            }
+        }
+
         private void Skip(IExcelDataReader excel, int count)
         {
             for(int i = 0; i < count; i++)
@@ -92,18 +117,18 @@ namespace EPS.Administration.Controllers.FileController
             }
         }
 
-        private void AddProperties(FileDataFlag flag, List<Tuple<string,string>> properties)
+        private void AddProperties(DeviceDataFlag flag, List<Tuple<string,string>> properties)
         {
             //TODO: HIGH AddOrUpdate property
             switch (flag)
             {
-                case FileDataFlag.Statusai:
+                case DeviceDataFlag.Statusai:
                     break;
-                case FileDataFlag.klasifikatorius:
+                case DeviceDataFlag.klasifikatorius:
                     break;
-                case FileDataFlag.komplektacijos:
+                case DeviceDataFlag.komplektacijos:
                     break;
-                case FileDataFlag.Vietos:
+                case DeviceDataFlag.Vietos:
                     break;
             }
         }

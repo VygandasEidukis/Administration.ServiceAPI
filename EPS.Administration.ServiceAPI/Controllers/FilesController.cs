@@ -30,7 +30,7 @@ namespace EPS.Administration.ServiceAPI.Controllers
                 if (file.Length > 0)
                 {
                     Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); //Needed because of: "No data is available for encoding 1252"
-                    ExtenderFileController filesController = new ExtenderFileController(file.OpenReadStream());
+                    DeviceFileController filesController = new DeviceFileController(file.OpenReadStream());
 
                     await filesController.ProcessFile();
                 }

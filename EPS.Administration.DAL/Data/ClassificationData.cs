@@ -1,6 +1,6 @@
-﻿namespace EPS.Administration.Models.Device
+﻿namespace EPS.Administration.DAL.Data
 {
-    public class Classification
+    public class ClassificationData
     {
         /// <summary>
         /// Identification number

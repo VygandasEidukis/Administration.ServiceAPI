@@ -5,7 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\EPS.Administration.Controllers\EPS.Administration.Controllers.csproj" />
+    <ProjectReference Include="..\EPS.Administration.DAL\EPS.Administration.DAL.csproj" />
     <ProjectReference Include="..\EPS.Administration.Models\EPS.Administration.Models.csproj" />
   </ItemGroup>
 

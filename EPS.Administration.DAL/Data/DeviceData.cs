@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
 
-namespace EPS.Administration.Models.Device
+namespace EPS.Administration.DAL.Data
 {
-    public class Device
+    public class DeviceData
     {
         // TODO: What if device does not have serial number?
         /// <summary>
         /// Unique serial number of the device
         /// </summary>
+        [Key]
         public string SerialNumber { get; set; }
 
         /// <summary>
@@ -20,7 +21,7 @@ namespace EPS.Administration.Models.Device
         /// <summary>
         /// Model of a device
         /// </summary>
-        public DeviceModel Model { get; set; }
+        public DeviceModelData Model { get; set; }
 
         /// <summary>
         /// Date of purchase of a the device
@@ -35,17 +36,17 @@ namespace EPS.Administration.Models.Device
         /// <summary>
         /// Event revisions of the device
         /// </summary>
-        public IEnumerable<DeviceEvent> DeviceEvents { get; set; }
+        public IEnumerable<DeviceEventData> DeviceEvents { get; set; }
 
         /// <summary>
         /// Grouping classifications of the device
         /// </summary>
-        public Classification Classification { get; set; }
+        public ClassificationData Classification { get; set; }
 
         /// <summary>
         /// Defines current status of the device
         /// </summary>
-        public DetailedStatus Status { get; set; }
+        public DetailedStatusData Status { get; set; }
 
         //TODO: ADD location
     }

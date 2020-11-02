@@ -5,7 +5,7 @@
     /// Each flag MUST be unique in ALL of the titles
     /// EOF flag is non unique, that marks end of data set
     /// </summary>
-    public enum FileDataFlag : int
+    public enum DeviceDataFlag : int
     {
         EOF = 0,
         Statusai = 1,

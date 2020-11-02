@@ -1,10 +1,10 @@
+using EPS.Administration.DAL;
 using EPS.Administration.ServiceAPI.Helper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace EPS.Administration.ServiceAPI
 {
@@ -29,6 +29,9 @@ namespace EPS.Administration.ServiceAPI
 
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
+
+            services.AddControllersWithViews();
+            services.RegisterDataServices(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

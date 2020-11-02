@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace EPS.Administration.Models.Device
+namespace EPS.Administration.DAL.Data
 {
-    public class DeviceEvent
+    public class DeviceEventData
     {
         /// <summary>
         /// Identification number of an device event
