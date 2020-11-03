@@ -7,6 +7,7 @@ namespace EPS.Administration.DAL.Data
     public interface IRevisionableEntity
     {
         int Id { get; set; }
+        int BaseId { get; set; }
         int Revision { get; set; }
     }
 }

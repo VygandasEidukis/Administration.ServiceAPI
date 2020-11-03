@@ -15,6 +15,8 @@ namespace EPS.Administration.DAL.Data
         [Column(Order = 1)]
         public int Revision { get; set; }
 
+        public int BaseId { get; set; }
+
         /// <summary>
         /// Internal code of classification, defined by business logic
         /// </summary>

@@ -8,10 +8,7 @@ namespace EPS.Administration.DAL
         //TODO: add seed data (When DB is empty it will fill this data)
         public static void Seed(DeviceContext context)
         {
-            if(!context.Devices.Any())
-            {
-                //context.Devices.Add();
-            }
+            
         }
     }
 }

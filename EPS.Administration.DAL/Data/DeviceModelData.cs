@@ -10,6 +10,7 @@ namespace EPS.Administration.DAL.Data
         public int Id { get; set; }
         [Column(Order = 1)]
         public int Revision { get; set; }
+        public int BaseId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
     }

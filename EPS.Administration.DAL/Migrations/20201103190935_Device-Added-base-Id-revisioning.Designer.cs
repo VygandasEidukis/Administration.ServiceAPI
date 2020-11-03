@@ -4,14 +4,16 @@ using EPS.Administration.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EPS.Administration.DAL.Migrations
 {
     [DbContext(typeof(DeviceContext))]
-    partial class DeviceContextModelSnapshot : ModelSnapshot
+    [Migration("20201103190935_Device-Added-base-Id-revisioning")]
+    partial class DeviceAddedbaseIdrevisioning
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

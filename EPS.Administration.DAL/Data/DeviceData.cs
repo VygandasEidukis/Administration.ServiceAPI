@@ -14,6 +14,8 @@ namespace EPS.Administration.DAL.Data
         [Column(Order = 1)]
         public int Revision { get; set; }
 
+        public int BaseId { get; set; }
+
         // TODO: What if device does not have serial number?
         /// <summary>
         /// Unique serial number of the device

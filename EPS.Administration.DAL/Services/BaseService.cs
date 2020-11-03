@@ -26,11 +26,13 @@ namespace EPS.Administration.DAL.Services
 
             if (item == null)
             {
+                entity.Revision = 1;
                 Add(entity);
             }else
             {
                 entity.Id = 0;
                 entity.Revision = item.Revision + 1;
+                entity.BaseId = item.BaseId == 0 ? item.Id : item.BaseId;
                 Add(entity);
             }
         }
@@ -54,7 +56,15 @@ namespace EPS.Administration.DAL.Services
 
         public TEntity GetSingle(Expression<Func<TEntity, bool>> func)
         {
-            return _dbEntity.Where(func).OrderByDescending(x=>x.Revision).FirstOrDefault();
+            var entities = _dbEntity.Where(func);
+
+            if(!entities.Any())
+            {
+                return null;
+            }
+
+
+            return entities.OrderByDescending(x=>x.Revision).FirstOrDefault();
         }
 
         public async Task Save()
