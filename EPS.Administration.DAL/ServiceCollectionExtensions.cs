@@ -19,6 +19,8 @@ namespace EPS.Administration.DAL
             services.AddScoped<IDetailedStatusService, DetailedStatusService>();
             services.AddScoped<IBaseService<DetailedStatusData>, BaseService<DetailedStatusData>>();
             services.AddScoped<IBaseService<ClassificationData>, BaseService<ClassificationData>>();
+            services.AddScoped<IBaseService<DeviceModelData>, BaseService<DeviceModelData>>();
+            services.AddScoped<IBaseService<DeviceLocationData>, BaseService<DeviceLocationData>>();
 
             return services;
         }

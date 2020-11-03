@@ -1,9 +1,10 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 using EPS.Administration.Controllers.FileController;
-using EPS.Administration.DAL.Context;
 using EPS.Administration.DAL.Services.ClassificationService;
 using EPS.Administration.DAL.Services.DetailedStatusService;
+using EPS.Administration.DAL.Services.DeviceLocationService;
+using EPS.Administration.DAL.Services.DeviceModelService;
 using EPS.Administration.Models.APICommunication;
 using EPS.Administration.Models.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -20,11 +21,18 @@ namespace EPS.Administration.ServiceAPI.Controllers
     public class FilesController : ControllerBase
     {
         private readonly IDetailedStatusService _statusService;
-        private readonly IClassificationService _classificationService;
-        public FilesController(IDetailedStatusService statusService, IClassificationService classification)
+        private readonly IClassificationService _groupingService;
+        private readonly IDeviceModelService _deviceModelService;
+        private readonly IDeviceLocationService _deviceLocationService;
+        public FilesController( IDetailedStatusService statusService, 
+                                IClassificationService classification, 
+                                IDeviceModelService modelService,
+                                IDeviceLocationService locationSerivce)
         {
             _statusService = statusService;
-            _classificationService = classification;
+            _groupingService = classification;
+            _deviceModelService = modelService;
+            _deviceLocationService = locationSerivce;
         }
 
         [AllowAnonymous]
@@ -41,7 +49,7 @@ namespace EPS.Administration.ServiceAPI.Controllers
                 if (file.Length > 0)
                 {
                     Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); //Needed because of: "No data is available for encoding 1252"
-                    DeviceFileController filesController = new DeviceFileController(file.OpenReadStream(), _statusService, _classificationService);
+                    DeviceFileController filesController = new DeviceFileController(file.OpenReadStream(), _statusService, _groupingService, _deviceModelService, _deviceLocationService);
 
                     await filesController.ProcessFile();
                 }

@@ -1,5 +1,7 @@
 ﻿using EPS.Administration.DAL.Services.ClassificationService;
 using EPS.Administration.DAL.Services.DetailedStatusService;
+using EPS.Administration.DAL.Services.DeviceLocationService;
+using EPS.Administration.DAL.Services.DeviceModelService;
 using EPS.Administration.Models.Device;
 using EPS.Administration.Models.Exceptions;
 using ExcelDataReader;
@@ -18,13 +20,21 @@ namespace EPS.Administration.Controllers.FileController
         private Stream _stream;
         private Dictionary<string, List<Device>> _devices;
         private readonly IDetailedStatusService _statusService;
-        private readonly IClassificationService _classificationService;
-        public DeviceFileController(Stream stream, IDetailedStatusService statusService, IClassificationService classificationService)
+        private readonly IClassificationService _groupService;
+        private readonly IDeviceModelService _deviceModelService;
+        private readonly IDeviceLocationService _deviceLocationService;
+        public DeviceFileController(Stream stream, 
+                                    IDetailedStatusService statusService, 
+                                    IClassificationService classificationService,
+                                    IDeviceModelService deviceModelService,
+                                    IDeviceLocationService deviceLocationService)
         {
             _stream = stream;
             _devices = new Dictionary<string, List<Device>>();
             _statusService = statusService;
-            _classificationService = classificationService;
+            _groupService = classificationService;
+            _deviceModelService = deviceModelService;
+            _deviceLocationService = deviceLocationService;
         }
 
         public Task ProcessFile()
@@ -86,6 +96,12 @@ namespace EPS.Administration.Controllers.FileController
                 string Key = excel.GetString(1);
                 string Value = excel.GetString(2);
 
+                //TODO: might need a change, since it seems like an error in excel, this is in locations table
+                if (string.IsNullOrEmpty(Value) && !string.IsNullOrEmpty(excel.GetString(4)))
+                {
+                    Value = excel.GetString(4);
+                }
+
                 if(string.IsNullOrEmpty(Key))
                 {
                     continue;
@@ -143,21 +159,43 @@ namespace EPS.Administration.Controllers.FileController
                     _statusService.AddOrUpdate(statuses);
                     break;
                 case DeviceDataFlag.klasifikatorius:
-                    var classificators = new List<Classification>();
+                    var models = new List<DeviceModel>();
                     foreach (var statusItem in properties)
                     {
-                        var classifi = new Classification()
+                        var deviceModel = new DeviceModel()
                         {
-                            Code = statusItem.Item1,
-                            Model = statusItem.Item2,
+                            Name = statusItem.Item1,
+                            Description = statusItem.Item2,
                         };
-                        classificators.Add(classifi);
+                        models.Add(deviceModel);
                     }
-                    _classificationService.AddOrUpdate(classificators);
+                    _deviceModelService.AddOrUpdate(models);
                     break;
                 case DeviceDataFlag.komplektacijos:
+                    var groups = new List<Classification>();
+                    foreach (var groupItem in properties)
+                    {
+                        var group = new Classification()
+                        {
+                            Code = groupItem.Item1,
+                            Model = groupItem.Item2,
+                        };
+                        groups.Add(group);
+                    }
+                    _groupService.AddOrUpdate(groups);
                     break;
                 case DeviceDataFlag.Vietos:
+                    var locations = new List<DeviceLocation>();
+                    foreach (var locationItem in properties)
+                    {
+                        var location = new DeviceLocation()
+                        {
+                            Name = locationItem.Item1,
+                            Details = locationItem.Item2,
+                        };
+                        locations.Add(location);
+                    }
+                    _deviceLocationService.AddOrUpdate(locations);
                     break;
             }
         }

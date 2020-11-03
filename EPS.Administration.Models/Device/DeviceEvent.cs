@@ -13,5 +13,6 @@ namespace EPS.Administration.Models.Device
         /// Event occurrence date
         /// </summary>
         public DateTime Date { get; set; }
+        public DeviceLocation Location { get; set; }
     }
 }

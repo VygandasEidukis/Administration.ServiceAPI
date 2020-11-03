@@ -22,5 +22,6 @@ namespace EPS.Administration.DAL.Data
         /// Event occurrence date
         /// </summary>
         public DateTime Date { get; set; }
+        public DeviceLocationData Location { get; set; }
     }
 }
