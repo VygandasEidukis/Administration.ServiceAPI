@@ -14,6 +14,8 @@ namespace EPS.Administration.DAL.Services
         private readonly DeviceContext _deviceContext;
         private DbSet<TEntity> _dbEntity;
 
+        private static object lockObj = new object();
+
         public BaseService(DeviceContext context)
         {
             _deviceContext = context;
@@ -67,9 +69,12 @@ namespace EPS.Administration.DAL.Services
             return entities.OrderByDescending(x=>x.Revision).FirstOrDefault();
         }
 
-        public async Task Save()
+        public void Save()
         {
-            await _deviceContext.SaveChangesAsync();
+            lock(lockObj)
+            {
+                _deviceContext.SaveChanges();
+            }
         }
 
         public void UpdateEntity(TEntity entity)

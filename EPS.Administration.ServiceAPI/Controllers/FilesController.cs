@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using EPS.Administration.Controllers.FileController;
 using EPS.Administration.DAL.Context;
+using EPS.Administration.DAL.Services.ClassificationService;
 using EPS.Administration.DAL.Services.DetailedStatusService;
 using EPS.Administration.Models.APICommunication;
 using EPS.Administration.Models.Exceptions;
@@ -19,9 +20,11 @@ namespace EPS.Administration.ServiceAPI.Controllers
     public class FilesController : ControllerBase
     {
         private readonly IDetailedStatusService _statusService;
-        public FilesController(IDetailedStatusService statusService)
+        private readonly IClassificationService _classificationService;
+        public FilesController(IDetailedStatusService statusService, IClassificationService classification)
         {
             _statusService = statusService;
+            _classificationService = classification;
         }
 
         [AllowAnonymous]
@@ -38,7 +41,7 @@ namespace EPS.Administration.ServiceAPI.Controllers
                 if (file.Length > 0)
                 {
                     Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); //Needed because of: "No data is available for encoding 1252"
-                    DeviceFileController filesController = new DeviceFileController(file.OpenReadStream(), _statusService);
+                    DeviceFileController filesController = new DeviceFileController(file.OpenReadStream(), _statusService, _classificationService);
 
                     await filesController.ProcessFile();
                 }

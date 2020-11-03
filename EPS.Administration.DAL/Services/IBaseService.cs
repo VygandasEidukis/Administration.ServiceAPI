@@ -15,6 +15,6 @@ namespace EPS.Administration.DAL.Services
         void AddOrUpdate(TEntity entity);
         void Delete(int id, int revision);
         void UpdateEntity(TEntity entity);
-        Task Save();
+        void Save();
     }
 }

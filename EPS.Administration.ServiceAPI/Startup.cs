@@ -1,4 +1,5 @@
 using EPS.Administration.DAL;
+using EPS.Administration.DAL.Services.ClassificationService;
 using EPS.Administration.DAL.Services.DetailedStatusService;
 using EPS.Administration.ServiceAPI.Helper;
 using Microsoft.AspNetCore.Authentication;
@@ -36,6 +37,7 @@ namespace EPS.Administration.ServiceAPI
 
             //DI for DAL
             services.AddScoped<IDetailedStatusService, DetailedStatusService>();
+            services.AddScoped<IClassificationService, ClassificationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

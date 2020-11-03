@@ -1,6 +1,7 @@
 ﻿using EPS.Administration.DAL.Context;
 using EPS.Administration.DAL.Data;
 using EPS.Administration.DAL.Services;
+using EPS.Administration.DAL.Services.ClassificationService;
 using EPS.Administration.DAL.Services.DetailedStatusService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +18,7 @@ namespace EPS.Administration.DAL
                 o => o.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IDetailedStatusService, DetailedStatusService>();
             services.AddScoped<IBaseService<DetailedStatusData>, BaseService<DetailedStatusData>>();
-            
+            services.AddScoped<IBaseService<ClassificationData>, BaseService<ClassificationData>>();
 
             return services;
         }
