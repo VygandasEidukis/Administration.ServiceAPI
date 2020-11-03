@@ -20,4 +20,8 @@
     <PackageReference Include="System.Runtime.Caching" Version="4.7.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EPS.Administration.Models\EPS.Administration.Models.csproj" />
+  </ItemGroup>
+
 </Project>

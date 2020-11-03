@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EPS.Administration.DAL\EPS.Administration.DAL.csproj" />
     <ProjectReference Include="..\EPS.Administration.Models\EPS.Administration.Models.csproj" />
   </ItemGroup>
 

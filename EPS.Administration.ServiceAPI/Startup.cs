@@ -1,4 +1,5 @@
 using EPS.Administration.DAL;
+using EPS.Administration.DAL.Services.DetailedStatusService;
 using EPS.Administration.ServiceAPI.Helper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
@@ -32,6 +33,9 @@ namespace EPS.Administration.ServiceAPI
 
             services.AddControllersWithViews();
             services.RegisterDataServices(Configuration);
+
+            //DI for DAL
+            services.AddScoped<IDetailedStatusService, DetailedStatusService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

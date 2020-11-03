@@ -14,29 +14,30 @@ namespace EPS.Administration.DAL.Services
         private readonly DeviceContext _deviceContext;
         private DbSet<TEntity> _dbEntity;
 
-        public BaseService(DeviceContext context, DbSet<TEntity> entities)
+        public BaseService(DeviceContext context)
         {
             _deviceContext = context;
-            _dbEntity = entities;
+            _dbEntity = _deviceContext.Set<TEntity>();
         }
 
         public void AddOrUpdate(TEntity entity)
         {
-            var item = _dbEntity.Find(entity.Id, entity.Revision);
+            var item = GetSingle(x => x.Id == entity.Id);
 
             if (item == null)
             {
                 Add(entity);
             }else
             {
-                entity.Revision += 1;
+                entity.Id = 0;
+                entity.Revision = item.Revision + 1;
                 Add(entity);
-                UpdateEntity(entity);
             }
         }
 
         public void Delete(int entityKey, int revision)
         {
+            //Find revision manually
             TEntity model = _dbEntity.Find(entityKey, revision);
             _dbEntity.Remove(model);
         }
@@ -53,7 +54,7 @@ namespace EPS.Administration.DAL.Services
 
         public TEntity GetSingle(Expression<Func<TEntity, bool>> func)
         {
-            return _dbEntity.Where(func).FirstOrDefault();
+            return _dbEntity.Where(func).OrderByDescending(x=>x.Revision).FirstOrDefault();
         }
 
         public async Task Save()

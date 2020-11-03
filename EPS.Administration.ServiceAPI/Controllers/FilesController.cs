@@ -1,6 +1,8 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 using EPS.Administration.Controllers.FileController;
+using EPS.Administration.DAL.Context;
+using EPS.Administration.DAL.Services.DetailedStatusService;
 using EPS.Administration.Models.APICommunication;
 using EPS.Administration.Models.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -16,6 +18,12 @@ namespace EPS.Administration.ServiceAPI.Controllers
     [Authorize]
     public class FilesController : ControllerBase
     {
+        private readonly IDetailedStatusService _statusService;
+        public FilesController(IDetailedStatusService statusService)
+        {
+            _statusService = statusService;
+        }
+
         [AllowAnonymous]
         [HttpPost("uploadExtenderData")]
         public async Task<BaseResponse> UploadExtenderData([FromForm] IFormFile file)
@@ -30,7 +38,7 @@ namespace EPS.Administration.ServiceAPI.Controllers
                 if (file.Length > 0)
                 {
                     Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); //Needed because of: "No data is available for encoding 1252"
-                    DeviceFileController filesController = new DeviceFileController(file.OpenReadStream());
+                    DeviceFileController filesController = new DeviceFileController(file.OpenReadStream(), _statusService);
 
                     await filesController.ProcessFile();
                 }

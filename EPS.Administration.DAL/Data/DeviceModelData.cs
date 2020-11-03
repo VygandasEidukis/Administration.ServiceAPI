@@ -8,7 +8,6 @@ namespace EPS.Administration.DAL.Data
         [Key]
         [Column(Order = 0)]
         public int Id { get; set; }
-        [Key]
         [Column(Order = 1)]
         public int Revision { get; set; }
         public string Name { get; set; }

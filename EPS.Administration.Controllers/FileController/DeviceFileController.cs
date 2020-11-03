@@ -1,4 +1,5 @@
-﻿using EPS.Administration.Models.Device;
+﻿using EPS.Administration.DAL.Services.DetailedStatusService;
+using EPS.Administration.Models.Device;
 using EPS.Administration.Models.Exceptions;
 using ExcelDataReader;
 using System;
@@ -15,10 +16,12 @@ namespace EPS.Administration.Controllers.FileController
     {
         private Stream _stream;
         private Dictionary<string, List<Device>> _devices;
-        public DeviceFileController(Stream stream)
+        private readonly IDetailedStatusService _statusService;
+        public DeviceFileController(Stream stream, IDetailedStatusService statusService)
         {
-            this._stream = stream;
-            this._devices = new Dictionary<string, List<Device>>();
+            _stream = stream;
+            _devices = new Dictionary<string, List<Device>>();
+            _statusService = statusService;
         }
 
         public Task ProcessFile()
@@ -123,6 +126,17 @@ namespace EPS.Administration.Controllers.FileController
             switch (flag)
             {
                 case DeviceDataFlag.Statusai:
+                    var statuses = new List<DetailedStatus>();
+                    foreach(var statusItem in properties)
+                    {
+                        var stat = new DetailedStatus()
+                        {
+                            Status = statusItem.Item1,
+                            Description = statusItem.Item2,
+                        };
+                        statuses.Add(stat);
+                    }
+                    _statusService.AddOrUpdate(statuses);
                     break;
                 case DeviceDataFlag.klasifikatorius:
                     break;

@@ -1,4 +1,7 @@
 ﻿using EPS.Administration.DAL.Context;
+using EPS.Administration.DAL.Data;
+using EPS.Administration.DAL.Services;
+using EPS.Administration.DAL.Services.DetailedStatusService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +15,9 @@ namespace EPS.Administration.DAL
             //TODO: HIGH Move sqlConnectionString to configuration
             services.AddDbContext<DeviceContext>(
                 o => o.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IDetailedStatusService, DetailedStatusService>();
+            services.AddScoped<IBaseService<DetailedStatusData>, BaseService<DetailedStatusData>>();
+            
 
             return services;
         }
