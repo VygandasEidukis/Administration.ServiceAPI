@@ -4,13 +4,10 @@ using System.Text;
 
 namespace EPS.Administration.Models.Device
 {
-    public class Group
+    public class Group : IRevisionable
     {
-        /// <summary>
-        /// Auto generated identification number for the group
-        /// </summary>
         public int Id { get; set; }
-
+        public int Revision { get; set; }
         /// <summary>
         /// Short code for the group identification
         /// </summary>

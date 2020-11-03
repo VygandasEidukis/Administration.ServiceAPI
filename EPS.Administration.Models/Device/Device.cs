@@ -4,8 +4,11 @@ using System.Text;
 
 namespace EPS.Administration.Models.Device
 {
-    public class Device
+    public class Device : IRevisionable
     {
+        public int Id { get; set; }
+        public int Revision { get; set; }
+
         // TODO: What if device does not have serial number?
         /// <summary>
         /// Unique serial number of the device

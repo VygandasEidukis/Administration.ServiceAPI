@@ -1,16 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EPS.Administration.DAL.Data
 {
-    public class DeviceData
+    public class DeviceData : IRevisionableEntity
     {
+        [Key]
+        [Column(Order = 0)]
+        public int Id { get; set; }
+
+        [Key]
+        [Column(Order = 1)]
+        public int Revision { get; set; }
+
         // TODO: What if device does not have serial number?
         /// <summary>
         /// Unique serial number of the device
         /// </summary>
-        [Key]
         public string SerialNumber { get; set; }
 
         /// <summary>

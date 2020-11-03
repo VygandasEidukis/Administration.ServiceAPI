@@ -1,11 +1,20 @@
-﻿namespace EPS.Administration.DAL.Data
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EPS.Administration.DAL.Data
 {
-    public class ClassificationData
+    public class ClassificationData : IRevisionableEntity
     {
         /// <summary>
         /// Identification number
         /// </summary>
+        [Key]
+        [Column(Order = 0)]
         public int Id { get; set; }
+
+        [Key]
+        [Column(Order = 1)]
+        public int Revision { get; set; }
 
         /// <summary>
         /// Internal code of classification, defined by business logic

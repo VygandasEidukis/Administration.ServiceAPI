@@ -1,7 +1,10 @@
 ﻿namespace EPS.Administration.Models.Device
 {
-    public class DetailedStatus
+    public class DetailedStatus : IRevisionable
     {
+        public int Id { get; set; }
+        public int Revision { get; set; }
+
         /// <summary>
         /// Device status
         /// </summary>

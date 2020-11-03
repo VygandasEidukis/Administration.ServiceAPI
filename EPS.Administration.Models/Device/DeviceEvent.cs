@@ -4,12 +4,10 @@ using System.Text;
 
 namespace EPS.Administration.Models.Device
 {
-    public class DeviceEvent
+    public class DeviceEvent : IRevisionable
     {
-        /// <summary>
-        /// Identification number of an device event
-        /// </summary>
         public int Id { get; set; }
+        public int Revision { get; set; }
 
         /// <summary>
         /// Event occurrence date
