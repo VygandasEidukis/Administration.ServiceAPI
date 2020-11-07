@@ -38,6 +38,12 @@ namespace EPS.Administration.DAL.Services.DetailedStatusService
             return MappingHelper<DetailedStatus>.Convert(item);
         }
 
+        public DetailedStatus GetStatus(int id)
+        {
+            var item = _detailedStatusService.GetSingle(x => x.Id == id);
+            return MappingHelper<DetailedStatus>.Convert(item);
+        }
+
         public DetailedStatusData ToDTO(DetailedStatus status)
         {
             if(status == null)

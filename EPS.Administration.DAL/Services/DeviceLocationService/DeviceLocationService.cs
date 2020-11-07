@@ -37,6 +37,12 @@ namespace EPS.Administration.DAL.Services.DeviceLocationService
             return MappingHelper<DeviceLocation>.Convert(location);
         }
 
+        public DeviceLocation GetLocation(int id)
+        {
+            var location = _deviceLocationService.GetSingle(x => x.Id == id);
+            return MappingHelper<DeviceLocation>.Convert(location);
+        }
+
         public DeviceLocationData ToDTO(DeviceLocation deviceModel)
         {
             if (deviceModel == null)

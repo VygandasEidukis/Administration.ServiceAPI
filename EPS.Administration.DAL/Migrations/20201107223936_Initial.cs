@@ -105,8 +105,10 @@ namespace EPS.Administration.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Revision = table.Column<int>(nullable: false),
                     BaseId = table.Column<int>(nullable: false),
+                    StatusId = table.Column<int>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
-                    LocationId = table.Column<int>(nullable: true),
+                    LocationId = table.Column<int>(nullable: false),
+                    GroupId = table.Column<int>(nullable: true),
                     DeviceDataId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -118,23 +120,12 @@ namespace EPS.Administration.DAL.Migrations
                         principalTable: "Devices",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_DeviceEvents_DeviceLocations_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "DeviceLocations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeviceEvents_DeviceDataId",
                 table: "DeviceEvents",
                 column: "DeviceDataId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DeviceEvents_LocationId",
-                table: "DeviceEvents",
-                column: "LocationId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -146,6 +137,9 @@ namespace EPS.Administration.DAL.Migrations
                 name: "DeviceEvents");
 
             migrationBuilder.DropTable(
+                name: "DeviceLocations");
+
+            migrationBuilder.DropTable(
                 name: "DeviceModels");
 
             migrationBuilder.DropTable(
@@ -153,9 +147,6 @@ namespace EPS.Administration.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Devices");
-
-            migrationBuilder.DropTable(
-                name: "DeviceLocations");
         }
     }
 }

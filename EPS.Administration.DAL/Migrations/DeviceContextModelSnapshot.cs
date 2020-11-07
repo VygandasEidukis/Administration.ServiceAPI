@@ -137,17 +137,21 @@ namespace EPS.Administration.DAL.Migrations
                     b.Property<int?>("DeviceDataId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("LocationId")
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LocationId")
                         .HasColumnType("int");
 
                     b.Property<int>("Revision")
                         .HasColumnType("int");
 
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DeviceDataId");
-
-                    b.HasIndex("LocationId");
 
                     b.ToTable("DeviceEvents");
                 });
@@ -205,10 +209,6 @@ namespace EPS.Administration.DAL.Migrations
                     b.HasOne("EPS.Administration.DAL.Data.DeviceData", null)
                         .WithMany("DeviceEvents")
                         .HasForeignKey("DeviceDataId");
-
-                    b.HasOne("EPS.Administration.DAL.Data.DeviceLocationData", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId");
                 });
 #pragma warning restore 612, 618
         }

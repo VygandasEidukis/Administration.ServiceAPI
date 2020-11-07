@@ -37,6 +37,12 @@ namespace EPS.Administration.DAL.Services.ClassificationService
             return MappingHelper<Classification>.Convert(classification);
         }
 
+        public Classification Get(int id)
+        {
+            var classification = _classificationService.GetSingle(x => x.Id == id);
+            return MappingHelper<Classification>.Convert(classification);
+        }
+
         public ClassificationData ToDTO(Classification classific)
         {
             if (classific == null)

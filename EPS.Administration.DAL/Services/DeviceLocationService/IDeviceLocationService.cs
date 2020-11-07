@@ -9,6 +9,7 @@ namespace EPS.Administration.DAL.Services.DeviceLocationService
         void AddOrUpdate(DeviceLocation location);
         void AddOrUpdate(IEnumerable<DeviceLocation> locations);
         DeviceLocation GetLocation(string name);
+        DeviceLocation GetLocation(int id);
         DeviceLocationData ToDTO(DeviceLocation deviceLocation);
     }
 }

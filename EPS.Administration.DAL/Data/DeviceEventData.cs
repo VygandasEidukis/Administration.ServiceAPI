@@ -6,22 +6,16 @@ namespace EPS.Administration.DAL.Data
 {
     public class DeviceEventData : IRevisionableEntity
     {
-        /// <summary>
-        /// Identification number of an device event
-        /// </summary>
-        [Key]
-        [Column(Order = 0)]
         public int Id { get; set; }
-
-        [Column(Order = 1)]
         public int Revision { get; set; }
-
         public int BaseId { get; set; }
-
-        /// <summary>
-        /// Event occurrence date
-        /// </summary>
+        [ForeignKey("status_FK")]
+        public int StatusId { get; set; }
         public DateTime Date { get; set; }
-        public DeviceLocationData Location { get; set; }
+        [ForeignKey("location_FK")]
+        public int LocationId { get; set; }
+        [ForeignKey("group_FK")]
+        public int? GroupId { get; set; }
+        public int DeviceDataId { get; set; }
     }
 }

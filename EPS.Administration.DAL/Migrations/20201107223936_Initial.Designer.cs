@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EPS.Administration.DAL.Migrations
 {
     [DbContext(typeof(DeviceContext))]
-    [Migration("20201107151350_Initial")]
+    [Migration("20201107223936_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -139,17 +139,21 @@ namespace EPS.Administration.DAL.Migrations
                     b.Property<int?>("DeviceDataId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("LocationId")
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LocationId")
                         .HasColumnType("int");
 
                     b.Property<int>("Revision")
                         .HasColumnType("int");
 
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DeviceDataId");
-
-                    b.HasIndex("LocationId");
 
                     b.ToTable("DeviceEvents");
                 });
@@ -207,10 +211,6 @@ namespace EPS.Administration.DAL.Migrations
                     b.HasOne("EPS.Administration.DAL.Data.DeviceData", null)
                         .WithMany("DeviceEvents")
                         .HasForeignKey("DeviceDataId");
-
-                    b.HasOne("EPS.Administration.DAL.Data.DeviceLocationData", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,6 +1,7 @@
 ﻿using EPS.Administration.DAL.Data;
 using EPS.Administration.DAL.Services.ClassificationService;
 using EPS.Administration.DAL.Services.DetailedStatusService;
+using EPS.Administration.DAL.Services.DeviceEventService;
 using EPS.Administration.DAL.Services.DeviceLocationService;
 using EPS.Administration.DAL.Services.DeviceModelService;
 using EPS.Administration.Models.Device;
@@ -19,18 +20,21 @@ namespace EPS.Administration.DAL.Services.DeviceService
         private readonly IClassificationService _classificationService;
         private readonly IDeviceLocationService _locationService;
         private readonly IDeviceModelService _modelService;
+        private readonly IDeviceEventService _deviceEventService;
 
-        public DeviceService(IBaseService<DeviceData> baseService, 
-                             IDetailedStatusService statusService, 
+        public DeviceService(IBaseService<DeviceData> baseService,
+                             IDetailedStatusService statusService,
                              IClassificationService classificationService,
                              IDeviceLocationService locationService,
-                             IDeviceModelService modelService)
+                             IDeviceModelService modelService,
+                             IDeviceEventService deviceEventService)
         {
             _deviceService = baseService;
             _statusService = statusService;
             _classificationService = classificationService;
             _locationService = locationService;
             _modelService = modelService;
+            _deviceEventService = deviceEventService;
         }
 
         public void AddOrUpdate(Device device)
@@ -45,7 +49,7 @@ namespace EPS.Administration.DAL.Services.DeviceService
             {
                 var dtoDevices = devices.Select(device => ToDTO(device));
 
-                if(!dtoDevices.Any())
+                if (!dtoDevices.Any())
                 {
                     return;
                 }
@@ -57,11 +61,12 @@ namespace EPS.Administration.DAL.Services.DeviceService
                     _deviceService.AddOrUpdate(dto);
                 }
                 _deviceService.Save();
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
-            
+
         }
 
         public Device Get(string serialNumber)
@@ -88,7 +93,7 @@ namespace EPS.Administration.DAL.Services.DeviceService
                 AdditionalNotes = device.AdditionalNotes,
                 BaseId = device.BaseId,
                 ClassificationId = classification.Id,
-                DeviceEvents = null,
+                DeviceEvents = device.DeviceEvents.Select(x => _deviceEventService.ToDTO(x)).ToList(),
                 Id = device.Id,
                 InitialLocationId = initialLocation.Id,
                 InvoiceNumber = device.InvoiceNumber,

@@ -1,6 +1,7 @@
 using EPS.Administration.DAL;
 using EPS.Administration.DAL.Services.ClassificationService;
 using EPS.Administration.DAL.Services.DetailedStatusService;
+using EPS.Administration.DAL.Services.DeviceEventService;
 using EPS.Administration.DAL.Services.DeviceLocationService;
 using EPS.Administration.DAL.Services.DeviceModelService;
 using EPS.Administration.DAL.Services.DeviceService;
@@ -44,6 +45,7 @@ namespace EPS.Administration.ServiceAPI
             services.AddScoped<IDeviceModelService, DeviceModelService>();
             services.AddScoped<IDeviceLocationService, DeviceLocationService>();
             services.AddScoped<IDeviceService, DeviceService>();
+            services.AddScoped<IDeviceEventService, DeviceEventService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
