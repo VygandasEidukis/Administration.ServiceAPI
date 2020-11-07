@@ -76,7 +76,7 @@ namespace EPS.Administration.Controllers.FileController
                             AddProperties(currnetFlag, porpertyList);
                         }else if (excel.GetString(1) != null && excel.GetString(1).ToUpper().Contains(DeviceDataFlag.Registras.ToString().ToUpper()))
                         {
-                            Skip(excel, 5);
+                            Skip(excel, 4);
                             ReadDevice(excel);
                         }
                     }
@@ -220,23 +220,24 @@ namespace EPS.Administration.Controllers.FileController
                     }
                     device.Classification = group;
 
-                    string sfDate = excel.GetValue(11)?.ToString();
+                    string sfDate = excel.GetValue(8)?.ToString();
                     if (!string.IsNullOrEmpty(sfDate) && DateTime.TryParse(sfDate, out var parsedSfDate))
                     {
                         device.SfDate = parsedSfDate;
                     }
 
-                    string sfNumber = excel.GetValue(12)?.ToString();
+                    string sfNumber = excel.GetValue(9)?.ToString();
                     if (!string.IsNullOrEmpty(sfNumber))
                     {
                         device.SfNumber = sfNumber;
                     }
 
-                    string notes = excel.GetValue(13)?.ToString();
+                    string notes = excel.GetValue(10)?.ToString();
                     if (!string.IsNullOrEmpty(notes))
                     {
                         device.AdditionalNotes = notes;
                     }
+                    device.DeviceEvents = ReadEvents(excel);
                     devices.Add(device);
                 }
                 _deviceService.AddOrUpdate(devices);
@@ -248,6 +249,69 @@ namespace EPS.Administration.Controllers.FileController
                 throw new AdministrationException($"Failed to parse the device {excel.GetString(3)}");
             }
 
+        }
+
+        private List<DeviceEvent> ReadEvents(IExcelDataReader excel)
+        {
+            int push = 10;
+            int times = 0;
+            int buffer = 4;
+            List<DeviceEvent> deviceEvents = new List<DeviceEvent>();
+            while (excel.GetValue(push + times * buffer + 1) != null)
+            {
+                var deviceEvent = new DeviceEvent();
+                var init = push + times * buffer;
+
+                string date = excel.GetValue(init+1)?.ToString();
+                if (!string.IsNullOrEmpty(date) && DateTime.TryParse(date, out var parsedSfDate))
+                {
+                    deviceEvent.Date = parsedSfDate;
+                }
+
+                string statusText = excel.GetValue(init+2)?.ToString();
+                if (string.IsNullOrEmpty(statusText))
+                {
+                    //TODO HIGH Add Log
+                    times++;
+                    continue;
+                }
+                var status = _statusService.GetStatus(statusText);
+
+                if (status == null)
+                {
+                    //TODO HIGH Add Log
+                    times++;
+                    continue;
+                }
+                deviceEvent.Status = status;
+
+                string locationText = excel.GetValue(init + 3)?.ToString();
+                if (string.IsNullOrEmpty(locationText))
+                {
+                    //TODO HIGH Add Log
+                    times++;
+                    continue;
+                }
+                var location = _deviceLocationService.GetLocation(locationText);
+                if (location == null)
+                {
+                    //TODO HIGH Add Log
+                    times++;
+                    continue;
+                }
+                deviceEvent.Location = location;
+
+                string groupText = excel.GetValue(init + 4)?.ToString();
+                if (!string.IsNullOrEmpty(groupText))
+                {
+                    var group = _groupService.Get(groupText);
+                    deviceEvent.Group = group;
+                }
+                times++;
+                deviceEvents.Add(deviceEvent);
+            }
+
+            return deviceEvents;
         }
 
         private void Skip(IExcelDataReader excel, int count)
