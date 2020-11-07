@@ -11,15 +11,17 @@ namespace EPS.Administration.DAL.Services
 {
     public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : class, IRevisionableEntity
     {
-        private readonly DeviceContext _deviceContext;
+        public DeviceContext context { get; private set; }
         private DbSet<TEntity> _dbEntity;
+        IQueryable<TEntity> _cachedEntities;
 
         private static object lockObj = new object();
 
         public BaseService(DeviceContext context)
         {
-            _deviceContext = context;
-            _dbEntity = _deviceContext.Set<TEntity>();
+            this.context = context;
+            _dbEntity = this.context.Set<TEntity>();
+            _cachedEntities = Get().AsQueryable<TEntity>();
         }
 
         public void AddOrUpdate(TEntity entity)
@@ -37,6 +39,7 @@ namespace EPS.Administration.DAL.Services
                 entity.BaseId = item.BaseId == 0 ? item.Id : item.BaseId;
                 Add(entity);
             }
+            UpdateEntity(entity);
         }
 
         public void Delete(int entityKey, int revision)
@@ -53,38 +56,42 @@ namespace EPS.Administration.DAL.Services
 
         public IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> func)
         {
-            return func == null ? _dbEntity.ToList() : _dbEntity.Where(func).ToList();
+            return func == null ? _cachedEntities.ToList() : _cachedEntities.Where(func).ToList();
         }
 
         public TEntity GetSingle(Expression<Func<TEntity, bool>> func)
         {
-            var entities = _dbEntity.Where(func);
+            var entity = _cachedEntities.Where(func).OrderByDescending(x => x.Revision).FirstOrDefault();
 
-            if(!entities.Any())
+            if (entity == null)
             {
                 return null;
             }
-
-
-            return entities.OrderByDescending(x=>x.Revision).FirstOrDefault();
+            return entity;
         }
 
         public void Save()
         {
             lock(lockObj)
             {
-                _deviceContext.SaveChanges();
+                context.SaveChanges();
             }
+            _cachedEntities = Get().AsQueryable<TEntity>();
         }
 
         public void UpdateEntity(TEntity entity)
         {
-            _deviceContext.Entry(entity).State = EntityState.Modified;
+            context.Entry(entity).State = EntityState.Added;
         }
 
         private void Add(TEntity entity)
         {
             _dbEntity.Add(entity);
+        }
+
+        public DeviceContext GetContext()
+        {
+            return context;
         }
     }
 }

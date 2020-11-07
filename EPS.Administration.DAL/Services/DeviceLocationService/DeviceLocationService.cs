@@ -1,9 +1,7 @@
 ﻿using EPS.Administration.DAL.Data;
 using EPS.Administration.Models.Device;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace EPS.Administration.DAL.Services.DeviceLocationService
 {
@@ -33,7 +31,13 @@ namespace EPS.Administration.DAL.Services.DeviceLocationService
             _deviceLocationService.Save();
         }
 
-        private DeviceLocationData ToDTO(DeviceLocation deviceModel)
+        public DeviceLocation GetLocation(string name)
+        {
+            var location = _deviceLocationService.GetSingle(x => x.Name == name);
+            return MappingHelper<DeviceLocation>.Convert(location);
+        }
+
+        public DeviceLocationData ToDTO(DeviceLocation deviceModel)
         {
             if (deviceModel == null)
             {

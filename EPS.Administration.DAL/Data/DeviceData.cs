@@ -8,55 +8,26 @@ namespace EPS.Administration.DAL.Data
     public class DeviceData : IRevisionableEntity
     {
         [Key]
-        [Column(Order = 0)]
         public int Id { get; set; }
-
-        [Column(Order = 1)]
         public int Revision { get; set; }
-
         public int BaseId { get; set; }
-
-        // TODO: What if device does not have serial number?
-        /// <summary>
-        /// Unique serial number of the device
-        /// </summary>
         public string SerialNumber { get; set; }
-
-        /// <summary>
-        /// Notes about the device
-        /// </summary>
         public string Notes { get; set; }
-
-        /// <summary>
-        /// Model of a device
-        /// </summary>
-        public DeviceModelData Model { get; set; }
-
-        /// <summary>
-        /// Date of purchase of a the device
-        /// </summary>
+        [ForeignKey("Model_FK")]
+        public int ModelId { get; set; }
         public DateTime AcquisitionDate { get; set; }
-
-        /// <summary>
-        /// Identification number of the invoice
-        /// </summary>
         public string InvoiceNumber { get; set; }
-
-        /// <summary>
-        /// Event revisions of the device
-        /// </summary>
         public IEnumerable<DeviceEventData> DeviceEvents { get; set; }
-
-        /// <summary>
-        /// Grouping classifications of the device
-        /// </summary>
-        public ClassificationData Classification { get; set; }
-
-        /// <summary>
-        /// Defines current status of the device
-        /// </summary>
-        public DetailedStatusData Status { get; set; }
-
-        //TODO: ADD location
+        [ForeignKey("Classification_FK")]
+        public int? ClassificationId { get; set; }
+        [ForeignKey("Status_FK")]
+        public int StatusId { get; set; }
+        [ForeignKey("OwnedBy_FK")]
+        public int OwnedById { get; set; }
+        [ForeignKey("InitialLocationId_FK")]
+        public int InitialLocationId { get; set; }
+        public DateTime SfDate { get; set; }
+        public string SfNumber { get; set; }
+        public string AdditionalNotes { get; set; }
     }
 }

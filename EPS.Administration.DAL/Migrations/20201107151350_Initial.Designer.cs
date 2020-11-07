@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EPS.Administration.DAL.Migrations
 {
     [DbContext(typeof(DeviceContext))]
-    [Migration("20201103190935_Device-Added-base-Id-revisioning")]
-    partial class DeviceAddedbaseIdrevisioning
+    [Migration("20201107151350_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -79,20 +79,29 @@ namespace EPS.Administration.DAL.Migrations
                     b.Property<DateTime>("AcquisitionDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("AdditionalNotes")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("BaseId")
                         .HasColumnType("int");
 
                     b.Property<int?>("ClassificationId")
                         .HasColumnType("int");
 
+                    b.Property<int>("InitialLocationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("InvoiceNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ModelId")
+                    b.Property<int>("ModelId")
                         .HasColumnType("int");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OwnedById")
+                        .HasColumnType("int");
 
                     b.Property<int>("Revision")
                         .HasColumnType("int");
@@ -100,16 +109,16 @@ namespace EPS.Administration.DAL.Migrations
                     b.Property<string>("SerialNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("StatusId")
+                    b.Property<DateTime>("SfDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SfNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StatusId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ClassificationId");
-
-                    b.HasIndex("ModelId");
-
-                    b.HasIndex("StatusId");
 
                     b.ToTable("Devices");
                 });
@@ -130,6 +139,9 @@ namespace EPS.Administration.DAL.Migrations
                     b.Property<int?>("DeviceDataId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("LocationId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Revision")
                         .HasColumnType("int");
 
@@ -137,7 +149,33 @@ namespace EPS.Administration.DAL.Migrations
 
                     b.HasIndex("DeviceDataId");
 
+                    b.HasIndex("LocationId");
+
                     b.ToTable("DeviceEvents");
+                });
+
+            modelBuilder.Entity("EPS.Administration.DAL.Data.DeviceLocationData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BaseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Revision")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DeviceLocations");
                 });
 
             modelBuilder.Entity("EPS.Administration.DAL.Data.DeviceModelData", b =>
@@ -164,26 +202,15 @@ namespace EPS.Administration.DAL.Migrations
                     b.ToTable("DeviceModels");
                 });
 
-            modelBuilder.Entity("EPS.Administration.DAL.Data.DeviceData", b =>
-                {
-                    b.HasOne("EPS.Administration.DAL.Data.ClassificationData", "Classification")
-                        .WithMany()
-                        .HasForeignKey("ClassificationId");
-
-                    b.HasOne("EPS.Administration.DAL.Data.DeviceModelData", "Model")
-                        .WithMany()
-                        .HasForeignKey("ModelId");
-
-                    b.HasOne("EPS.Administration.DAL.Data.DetailedStatusData", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId");
-                });
-
             modelBuilder.Entity("EPS.Administration.DAL.Data.DeviceEventData", b =>
                 {
                     b.HasOne("EPS.Administration.DAL.Data.DeviceData", null)
                         .WithMany("DeviceEvents")
                         .HasForeignKey("DeviceDataId");
+
+                    b.HasOne("EPS.Administration.DAL.Data.DeviceLocationData", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId");
                 });
 #pragma warning restore 612, 618
         }

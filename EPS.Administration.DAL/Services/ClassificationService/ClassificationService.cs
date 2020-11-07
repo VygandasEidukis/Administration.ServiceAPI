@@ -19,9 +19,9 @@ namespace EPS.Administration.DAL.Services.ClassificationService
             _classificationService.AddOrUpdate(ToDTO(classification));
         }
 
-        public void AddOrUpdate(IEnumerable<Classification> statuses)
+        public void AddOrUpdate(IEnumerable<Classification> classifications)
         {
-            var dtos = statuses.Select(x => ToDTO(x));
+            var dtos = classifications.Select(x => ToDTO(x));
             foreach (var dto in dtos)
             {
                 var item = _classificationService.GetSingle(x => x.Code == dto.Code);
@@ -31,7 +31,13 @@ namespace EPS.Administration.DAL.Services.ClassificationService
             _classificationService.Save();
         }
 
-        private ClassificationData ToDTO(Classification classific)
+        public Classification Get(string code)
+        {
+            var classification = _classificationService.GetSingle(x => x.Code == code);
+            return MappingHelper<Classification>.Convert(classification);
+        }
+
+        public ClassificationData ToDTO(Classification classific)
         {
             if (classific == null)
             {

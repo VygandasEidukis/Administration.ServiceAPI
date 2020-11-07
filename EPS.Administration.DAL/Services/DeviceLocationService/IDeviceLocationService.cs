@@ -1,13 +1,14 @@
-﻿using EPS.Administration.Models.Device;
-using System;
+﻿using EPS.Administration.DAL.Data;
+using EPS.Administration.Models.Device;
 using System.Collections.Generic;
-using System.Text;
 
 namespace EPS.Administration.DAL.Services.DeviceLocationService
 {
     public interface IDeviceLocationService
     {
-        void AddOrUpdate(DeviceLocation status);
-        void AddOrUpdate(IEnumerable<DeviceLocation> statuses);
+        void AddOrUpdate(DeviceLocation location);
+        void AddOrUpdate(IEnumerable<DeviceLocation> locations);
+        DeviceLocation GetLocation(string name);
+        DeviceLocationData ToDTO(DeviceLocation deviceLocation);
     }
 }

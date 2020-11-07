@@ -77,20 +77,29 @@ namespace EPS.Administration.DAL.Migrations
                     b.Property<DateTime>("AcquisitionDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("AdditionalNotes")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("BaseId")
                         .HasColumnType("int");
 
                     b.Property<int?>("ClassificationId")
                         .HasColumnType("int");
 
+                    b.Property<int>("InitialLocationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("InvoiceNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ModelId")
+                    b.Property<int>("ModelId")
                         .HasColumnType("int");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OwnedById")
+                        .HasColumnType("int");
 
                     b.Property<int>("Revision")
                         .HasColumnType("int");
@@ -98,16 +107,16 @@ namespace EPS.Administration.DAL.Migrations
                     b.Property<string>("SerialNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("StatusId")
+                    b.Property<DateTime>("SfDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SfNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StatusId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ClassificationId");
-
-                    b.HasIndex("ModelId");
-
-                    b.HasIndex("StatusId");
 
                     b.ToTable("Devices");
                 });
@@ -189,21 +198,6 @@ namespace EPS.Administration.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DeviceModels");
-                });
-
-            modelBuilder.Entity("EPS.Administration.DAL.Data.DeviceData", b =>
-                {
-                    b.HasOne("EPS.Administration.DAL.Data.ClassificationData", "Classification")
-                        .WithMany()
-                        .HasForeignKey("ClassificationId");
-
-                    b.HasOne("EPS.Administration.DAL.Data.DeviceModelData", "Model")
-                        .WithMany()
-                        .HasForeignKey("ModelId");
-
-                    b.HasOne("EPS.Administration.DAL.Data.DetailedStatusData", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId");
                 });
 
             modelBuilder.Entity("EPS.Administration.DAL.Data.DeviceEventData", b =>

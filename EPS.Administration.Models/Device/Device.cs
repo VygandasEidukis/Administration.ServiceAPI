@@ -8,6 +8,7 @@ namespace EPS.Administration.Models.Device
     {
         public int Id { get; set; }
         public int Revision { get; set; }
+        public int BaseId { get; set; }
 
         // TODO: What if device does not have serial number?
         /// <summary>
@@ -50,6 +51,25 @@ namespace EPS.Administration.Models.Device
         /// </summary>
         public DetailedStatus Status { get; set; }
 
-        //TODO: ADD location
+        /// <summary>
+        /// Defines location of institution that device is owned by
+        /// </summary>
+        public DeviceLocation OwnedBy { get; set; }
+        /// <summary>
+        /// Defines location of institution where device was on purchase
+        /// </summary>
+        public DeviceLocation InitialLocation { get; set; }
+        /// <summary>
+        /// SF date
+        /// </summary>
+        public DateTime SfDate { get; set; }
+        /// <summary>
+        /// Sf number
+        /// </summary>
+        public string SfNumber { get; set; }
+        /// <summary>
+        /// Additional notes
+        /// </summary>
+        public string AdditionalNotes { get; set; }
     }
 }

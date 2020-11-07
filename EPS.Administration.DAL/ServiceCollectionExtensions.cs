@@ -21,6 +21,7 @@ namespace EPS.Administration.DAL
             services.AddScoped<IBaseService<ClassificationData>, BaseService<ClassificationData>>();
             services.AddScoped<IBaseService<DeviceModelData>, BaseService<DeviceModelData>>();
             services.AddScoped<IBaseService<DeviceLocationData>, BaseService<DeviceLocationData>>();
+            services.AddScoped<IBaseService<DeviceData>, BaseService<DeviceData>>();
 
             return services;
         }

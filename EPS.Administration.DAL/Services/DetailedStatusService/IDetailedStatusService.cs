@@ -1,4 +1,5 @@
-﻿using EPS.Administration.Models.Device;
+﻿using EPS.Administration.DAL.Data;
+using EPS.Administration.Models.Device;
 using System.Collections.Generic;
 
 namespace EPS.Administration.DAL.Services.DetailedStatusService
@@ -7,5 +8,7 @@ namespace EPS.Administration.DAL.Services.DetailedStatusService
     {
         void AddOrUpdate(DetailedStatus status);
         void AddOrUpdate(IEnumerable<DetailedStatus> statuses);
+        DetailedStatus GetStatus(string status);
+        DetailedStatusData ToDTO(DetailedStatus status);
     }
 }

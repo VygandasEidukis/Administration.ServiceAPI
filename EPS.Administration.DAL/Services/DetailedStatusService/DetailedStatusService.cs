@@ -1,10 +1,7 @@
 ﻿using EPS.Administration.DAL.Data;
 using EPS.Administration.Models.Device;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace EPS.Administration.DAL.Services.DetailedStatusService
 {
@@ -35,7 +32,13 @@ namespace EPS.Administration.DAL.Services.DetailedStatusService
             _detailedStatusService.Save();
         }
 
-        private DetailedStatusData ToDTO(DetailedStatus status)
+        public DetailedStatus GetStatus(string status)
+        {
+            var item = _detailedStatusService.GetSingle(x => x.Status == status);
+            return MappingHelper<DetailedStatus>.Convert(item);
+        }
+
+        public DetailedStatusData ToDTO(DetailedStatus status)
         {
             if(status == null)
             {

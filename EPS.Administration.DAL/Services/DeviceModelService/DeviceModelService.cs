@@ -1,9 +1,7 @@
 ﻿using EPS.Administration.DAL.Data;
 using EPS.Administration.Models.Device;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace EPS.Administration.DAL.Services.DeviceModelService
 {
@@ -16,14 +14,14 @@ namespace EPS.Administration.DAL.Services.DeviceModelService
             _deviceModelService = baseService;
         }
 
-        public void AddOrUpdate(DeviceModel classification)
+        public void AddOrUpdate(DeviceModel model)
         {
-            _deviceModelService.AddOrUpdate(ToDTO(classification));
+            _deviceModelService.AddOrUpdate(ToDTO(model));
         }
 
-        public void AddOrUpdate(IEnumerable<DeviceModel> statuses)
+        public void AddOrUpdate(IEnumerable<DeviceModel> models)
         {
-            var dtos = statuses.Select(x => ToDTO(x));
+            var dtos = models.Select(x => ToDTO(x));
             foreach (var dto in dtos)
             {
                 var item = _deviceModelService.GetSingle(x => x.Name == dto.Name);
@@ -33,7 +31,13 @@ namespace EPS.Administration.DAL.Services.DeviceModelService
             _deviceModelService.Save();
         }
 
-        private DeviceModelData ToDTO(DeviceModel deviceModel)
+        public DeviceModel Get(string model)
+        {
+            var modelData = _deviceModelService.GetSingle(x=>x.Name == model);
+            return MappingHelper<DeviceModel>.Convert(modelData);
+        }
+
+        public  DeviceModelData ToDTO(DeviceModel deviceModel)
         {
             if (deviceModel == null)
             {

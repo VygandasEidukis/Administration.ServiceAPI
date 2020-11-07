@@ -3,6 +3,7 @@ using EPS.Administration.DAL.Services.ClassificationService;
 using EPS.Administration.DAL.Services.DetailedStatusService;
 using EPS.Administration.DAL.Services.DeviceLocationService;
 using EPS.Administration.DAL.Services.DeviceModelService;
+using EPS.Administration.DAL.Services.DeviceService;
 using EPS.Administration.ServiceAPI.Helper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
@@ -42,6 +43,7 @@ namespace EPS.Administration.ServiceAPI
             services.AddScoped<IClassificationService, ClassificationService>();
             services.AddScoped<IDeviceModelService, DeviceModelService>();
             services.AddScoped<IDeviceLocationService, DeviceLocationService>();
+            services.AddScoped<IDeviceService, DeviceService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

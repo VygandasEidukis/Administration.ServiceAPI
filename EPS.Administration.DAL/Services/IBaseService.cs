@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EPS.Administration.DAL.Context;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -9,6 +10,7 @@ namespace EPS.Administration.DAL.Services
 {
     public interface IBaseService<TEntity> where TEntity : class
     {
+        DeviceContext context { get; }
         IEnumerable<TEntity> Get();
         IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> func);
         TEntity GetSingle(Expression<Func<TEntity, bool>> func);

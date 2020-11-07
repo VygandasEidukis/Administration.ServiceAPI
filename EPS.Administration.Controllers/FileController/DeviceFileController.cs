@@ -2,6 +2,7 @@
 using EPS.Administration.DAL.Services.DetailedStatusService;
 using EPS.Administration.DAL.Services.DeviceLocationService;
 using EPS.Administration.DAL.Services.DeviceModelService;
+using EPS.Administration.DAL.Services.DeviceService;
 using EPS.Administration.Models.Device;
 using EPS.Administration.Models.Exceptions;
 using ExcelDataReader;
@@ -23,11 +24,14 @@ namespace EPS.Administration.Controllers.FileController
         private readonly IClassificationService _groupService;
         private readonly IDeviceModelService _deviceModelService;
         private readonly IDeviceLocationService _deviceLocationService;
+        private readonly IDeviceService _deviceService;
+
         public DeviceFileController(Stream stream, 
                                     IDetailedStatusService statusService, 
                                     IClassificationService classificationService,
                                     IDeviceModelService deviceModelService,
-                                    IDeviceLocationService deviceLocationService)
+                                    IDeviceLocationService deviceLocationService,
+                                    IDeviceService deviceService)
         {
             _stream = stream;
             _devices = new Dictionary<string, List<Device>>();
@@ -35,6 +39,7 @@ namespace EPS.Administration.Controllers.FileController
             _groupService = classificationService;
             _deviceModelService = deviceModelService;
             _deviceLocationService = deviceLocationService;
+            _deviceService = deviceService;
         }
 
         public Task ProcessFile()
@@ -72,9 +77,8 @@ namespace EPS.Administration.Controllers.FileController
                         }else if (excel.GetString(1) != null && excel.GetString(1).ToUpper().Contains(DeviceDataFlag.Registras.ToString().ToUpper()))
                         {
                             Skip(excel, 5);
-                            ReadRevisions(excel);
+                            ReadDevice(excel);
                         }
-
                     }
                 }
             }
@@ -114,22 +118,136 @@ namespace EPS.Administration.Controllers.FileController
             return propertyList;
         }
 
-        private void ReadRevisions (IExcelDataReader excel)
+        private void ReadDevice (IExcelDataReader excel)
         {
-            while(excel.Read() && excel.GetString(3) != null)
+            try
             {
+                var devices = new List<Device>();
+
+                while(excel.Read() && excel.GetString(3) != null)
+                {
                 var device = new Device();
+                
+                    if(excel.GetValue(2) == null)
+                    {
+                        return;
+                    }
 
-                try
-                {
+                    string modelText = excel.GetValue(1)?.ToString();
+                    if(string.IsNullOrEmpty(modelText))
+                    {
+                        //TODO HIGH Add Log
+                        continue;
+                    }
+                    var model = _deviceModelService.Get(modelText);
 
-                }catch
-                {
-                    //TODO: HIGH add logging
-                    throw new AdministrationException($"Failed to parse the device {excel.GetString(3)}");
+                    if(model == null)
+                    {
+                        //TODO HIGH Add Log
+                        continue;
+                    }
+                    device.Model = model;
+
+                    string serialNumberText = excel.GetValue(2)?.ToString();
+                    if (string.IsNullOrEmpty(serialNumberText))
+                    {
+                        //TODO HIGH Add Log
+                        continue;
+                    }
+                    device.SerialNumber = serialNumberText;
+
+                    string ownedByText = excel.GetValue(3)?.ToString();
+                    if (string.IsNullOrEmpty(ownedByText))
+                    {
+                        //TODO HIGH Add Log
+                        continue;
+                    }
+                    device.OwnedBy = _deviceLocationService.GetLocation(ownedByText);
+
+                    if (device.OwnedBy == null)
+                    {
+                        continue;
+                    }
+
+                    string dateText = excel.GetValue(4)?.ToString();
+                    if (string.IsNullOrEmpty(dateText) || !DateTime.TryParse(dateText, out var acquisitionDate))
+                    {
+                        //TODO HIGH Add Log
+                        continue;
+                    }
+                    device.AcquisitionDate = acquisitionDate;
+
+                    string statusText = excel.GetValue(5)?.ToString();
+                    if (string.IsNullOrEmpty(statusText))
+                    {
+                        //TODO HIGH Add Log
+                        continue;
+                    }
+                    var status = _statusService.GetStatus(statusText);
+                    
+                    if(status == null)
+                    {
+                        //TODO HIGH Add Log
+                        continue;
+                    }
+                    device.Status = status;
+
+                    string locationText = excel.GetValue(6)?.ToString();
+                    if (string.IsNullOrEmpty(locationText))
+                    {
+                        //TODO HIGH Add Log
+                        continue;
+                    }
+                    var location = _deviceLocationService.GetLocation(locationText);
+                    if(location == null)
+                    {
+                        //TODO HIGH Add Log
+                        continue;
+                    }
+                    device.InitialLocation = location;
+
+                    string groupText = excel.GetValue(7)?.ToString();
+                    if (string.IsNullOrEmpty(groupText))
+                    {
+                        //TODO HIGH Add Log
+                        continue;
+                    }
+                    var group = _groupService.Get(groupText);
+                    if (group == null)
+                    {
+                        //TODO HIGH Add Log
+                        continue;
+                    }
+                    device.Classification = group;
+
+                    string sfDate = excel.GetValue(11)?.ToString();
+                    if (!string.IsNullOrEmpty(sfDate) && DateTime.TryParse(sfDate, out var parsedSfDate))
+                    {
+                        device.SfDate = parsedSfDate;
+                    }
+
+                    string sfNumber = excel.GetValue(12)?.ToString();
+                    if (!string.IsNullOrEmpty(sfNumber))
+                    {
+                        device.SfNumber = sfNumber;
+                    }
+
+                    string notes = excel.GetValue(13)?.ToString();
+                    if (!string.IsNullOrEmpty(notes))
+                    {
+                        device.AdditionalNotes = notes;
+                    }
+                    devices.Add(device);
                 }
+                _deviceService.AddOrUpdate(devices);
 
             }
+                catch (Exception ex)
+            {
+                //TODO: HIGH add logging
+                throw new AdministrationException($"Failed to parse the device {excel.GetString(3)}");
+            }
+
         }
 
         private void Skip(IExcelDataReader excel, int count)
