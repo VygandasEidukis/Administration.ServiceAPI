@@ -75,6 +75,53 @@ namespace EPS.Administration.DAL.Services.DeviceService
             return MappingHelper<Device>.Convert(device);
         }
 
+        public List<Device> Get(int from, int top)
+        {
+            var devices = _deviceService.Get().Where(x => x.BaseId == 0).Skip(from).Take(top);
+            devices = devices.Select(d => _deviceService.Get().Where(x => x.BaseId == d.Id).LastOrDefault());
+            List<Device> mappedDevices = new List<Device>();
+            foreach (var device in devices)
+            {
+                var dev = ToDto(device);
+                mappedDevices.Add(dev);
+            }
+            return mappedDevices;
+        }
+
+        public int BaseDeviceCount()
+        {
+            return _deviceService.Get().Where(x => x.BaseId == 0).Count();
+        }
+
+        private Device ToDto(DeviceData device)
+        {
+            var classification = _classificationService.Get(device.ClassificationId.Value);
+            var initialLocation = _locationService.GetLocation(device.InitialLocationId);
+            var model = _modelService.GetById(device.ModelId);
+            var ownedBy = _locationService.GetLocation(device.OwnedById);
+            var status = _statusService.GetStatus(device.StatusId);
+            var dev = new Device()
+            {
+                AcquisitionDate = device.AcquisitionDate,
+                AdditionalNotes = device.AdditionalNotes,
+                BaseId = device.BaseId,
+                Classification = classification,
+                Id = device.Id,
+                InitialLocation = initialLocation,
+                InvoiceNumber = device.InvoiceNumber,
+                Model = model,
+                Notes = device.Notes,
+                OwnedBy = ownedBy,
+                Revision = device.Revision,
+                SerialNumber = device.SerialNumber,
+                SfDate = device.SfDate,
+                SfNumber = device.SfNumber,
+                Status = status,
+                DeviceEvents = device.DeviceEvents.Select(x => _deviceEventService.ToDTO(x)).ToList()
+            };
+            return dev;
+        }
+
         public DeviceData ToDTO(Device device)
         {
             if (device == null)

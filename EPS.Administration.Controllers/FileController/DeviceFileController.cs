@@ -10,8 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EPS.Administration.Controllers.FileController
@@ -26,8 +24,8 @@ namespace EPS.Administration.Controllers.FileController
         private readonly IDeviceLocationService _deviceLocationService;
         private readonly IDeviceService _deviceService;
 
-        public DeviceFileController(Stream stream, 
-                                    IDetailedStatusService statusService, 
+        public DeviceFileController(Stream stream,
+                                    IDetailedStatusService statusService,
                                     IClassificationService classificationService,
                                     IDeviceModelService deviceModelService,
                                     IDeviceLocationService deviceLocationService,
@@ -57,11 +55,11 @@ namespace EPS.Administration.Controllers.FileController
                 //If it does come down of using 
                 using (var excel = ExcelReaderFactory.CreateReader(_stream))
                 {
-                    while(excel.Read())
+                    while (excel.Read())
                     {
                         var values = Enum.GetValues(typeof(DeviceDataFlag))
                                             .OfType<DeviceDataFlag>()
-                                            .Where(x=> x != DeviceDataFlag.EOF && x != DeviceDataFlag.Registras)
+                                            .Where(x => x != DeviceDataFlag.EOF && x != DeviceDataFlag.Registras)
                                             .Select(x => x.ToString().ToUpper())
                                             .ToList();
 
@@ -74,7 +72,8 @@ namespace EPS.Administration.Controllers.FileController
 
                             var porpertyList = ReadProperty(excel);
                             AddProperties(currnetFlag, porpertyList);
-                        }else if (excel.GetString(1) != null && excel.GetString(1).ToUpper().Contains(DeviceDataFlag.Registras.ToString().ToUpper()))
+                        }
+                        else if (excel.GetString(1) != null && excel.GetString(1).ToUpper().Contains(DeviceDataFlag.Registras.ToString().ToUpper()))
                         {
                             Skip(excel, 4);
                             ReadDevice(excel);
@@ -91,11 +90,11 @@ namespace EPS.Administration.Controllers.FileController
             return Task.CompletedTask;
         }
 
-        private List<Tuple<string,string>> ReadProperty(IExcelDataReader excel)
+        private List<Tuple<string, string>> ReadProperty(IExcelDataReader excel)
         {
             Skip(excel, 2);
             var propertyList = new List<Tuple<string, string>>();
-            while(excel.Read() && excel.GetString(1)?.ToUpper() != DeviceDataFlag.EOF.ToString())
+            while (excel.Read() && excel.GetString(1)?.ToUpper() != DeviceDataFlag.EOF.ToString())
             {
                 string Key = excel.GetString(1);
                 string Value = excel.GetString(2);
@@ -106,7 +105,7 @@ namespace EPS.Administration.Controllers.FileController
                     Value = excel.GetString(4);
                 }
 
-                if(string.IsNullOrEmpty(Key))
+                if (string.IsNullOrEmpty(Key))
                 {
                     continue;
                 }
@@ -118,30 +117,30 @@ namespace EPS.Administration.Controllers.FileController
             return propertyList;
         }
 
-        private void ReadDevice (IExcelDataReader excel)
+        private void ReadDevice(IExcelDataReader excel)
         {
             try
             {
                 var devices = new List<Device>();
 
-                while(excel.Read() && excel.GetString(3) != null)
+                while (excel.Read() && excel.GetString(3) != null)
                 {
-                var device = new Device();
-                
-                    if(excel.GetValue(2) == null)
+                    var device = new Device();
+
+                    if (excel.GetValue(2) == null)
                     {
                         return;
                     }
 
                     string modelText = excel.GetValue(1)?.ToString();
-                    if(string.IsNullOrEmpty(modelText))
+                    if (string.IsNullOrEmpty(modelText))
                     {
                         //TODO HIGH Add Log
                         continue;
                     }
                     var model = _deviceModelService.Get(modelText);
 
-                    if(model == null)
+                    if (model == null)
                     {
                         //TODO HIGH Add Log
                         continue;
@@ -184,8 +183,8 @@ namespace EPS.Administration.Controllers.FileController
                         continue;
                     }
                     var status = _statusService.GetStatus(statusText);
-                    
-                    if(status == null)
+
+                    if (status == null)
                     {
                         //TODO HIGH Add Log
                         continue;
@@ -199,7 +198,7 @@ namespace EPS.Administration.Controllers.FileController
                         continue;
                     }
                     var location = _deviceLocationService.GetLocation(locationText);
-                    if(location == null)
+                    if (location == null)
                     {
                         //TODO HIGH Add Log
                         continue;
@@ -243,7 +242,7 @@ namespace EPS.Administration.Controllers.FileController
                 _deviceService.AddOrUpdate(devices);
 
             }
-                catch (Exception ex)
+            catch (Exception ex)
             {
                 //TODO: HIGH add logging
                 throw new AdministrationException($"Failed to parse the device {excel.GetString(3)}");
@@ -262,13 +261,13 @@ namespace EPS.Administration.Controllers.FileController
                 var deviceEvent = new DeviceEvent();
                 var init = push + times * buffer;
 
-                string date = excel.GetValue(init+1)?.ToString();
+                string date = excel.GetValue(init + 1)?.ToString();
                 if (!string.IsNullOrEmpty(date) && DateTime.TryParse(date, out var parsedSfDate))
                 {
                     deviceEvent.Date = parsedSfDate;
                 }
 
-                string statusText = excel.GetValue(init+2)?.ToString();
+                string statusText = excel.GetValue(init + 2)?.ToString();
                 if (string.IsNullOrEmpty(statusText))
                 {
                     //TODO HIGH Add Log
@@ -316,20 +315,20 @@ namespace EPS.Administration.Controllers.FileController
 
         private void Skip(IExcelDataReader excel, int count)
         {
-            for(int i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
             {
                 excel.Read();
             }
         }
 
-        private void AddProperties(DeviceDataFlag flag, List<Tuple<string,string>> properties)
+        private void AddProperties(DeviceDataFlag flag, List<Tuple<string, string>> properties)
         {
             //TODO: HIGH AddOrUpdate property
             switch (flag)
             {
                 case DeviceDataFlag.Statusai:
                     var statuses = new List<DetailedStatus>();
-                    foreach(var statusItem in properties)
+                    foreach (var statusItem in properties)
                     {
                         var stat = new DetailedStatus()
                         {

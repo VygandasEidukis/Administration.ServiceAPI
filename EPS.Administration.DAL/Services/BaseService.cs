@@ -1,6 +1,7 @@
 ﻿using EPS.Administration.DAL.Context;
 using EPS.Administration.DAL.Data;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,14 +33,32 @@ namespace EPS.Administration.DAL.Services
             {
                 entity.Revision = 1;
                 Add(entity);
-            }else
+            }
+            else
             {
+                entity.Id = item.Id;
+                entity.Revision = item.Revision;
+                entity.BaseId = item.BaseId;
+
+                if (!IsChanged(entity, item))
+                {
+                    return;
+                }
+
                 entity.Id = 0;
                 entity.Revision = item.Revision + 1;
                 entity.BaseId = item.BaseId == 0 ? item.Id : item.BaseId;
                 Add(entity);
             }
             UpdateEntity(entity);
+        }
+
+        private bool IsChanged(dynamic first, dynamic second)
+        {
+            var a = JsonConvert.SerializeObject(first);
+            var b = JsonConvert.SerializeObject(second);
+
+            return a != b;
         }
 
         public void Delete(int entityKey, int revision)
@@ -72,7 +91,7 @@ namespace EPS.Administration.DAL.Services
 
         public void Save()
         {
-            lock(lockObj)
+            lock (lockObj)
             {
                 context.SaveChanges();
             }

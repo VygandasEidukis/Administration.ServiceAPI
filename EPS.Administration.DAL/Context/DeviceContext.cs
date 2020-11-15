@@ -10,8 +10,7 @@ namespace EPS.Administration.DAL.Context
         public DbSet<ClassificationData> Classifications { get; set; }
         public DbSet<DetailedStatusData> Statuses { get; set; }
         public DbSet<DeviceEventData> DeviceEvents { get; set; }
-        public DbSet<DeviceLocationData> DeviceLocations{ get; set; }
-
+        public DbSet<DeviceLocationData> DeviceLocations { get; set; }
         public DeviceContext(DbContextOptions<DeviceContext> options) : base(options) { }
 
     }

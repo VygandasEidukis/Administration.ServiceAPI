@@ -33,7 +33,13 @@ namespace EPS.Administration.DAL.Services.DeviceModelService
 
         public DeviceModel Get(string model)
         {
-            var modelData = _deviceModelService.GetSingle(x=>x.Name == model);
+            var modelData = _deviceModelService.GetSingle(x => x.Name == model);
+            return MappingHelper<DeviceModel>.Convert(modelData);
+        }
+
+        public DeviceModel GetById(int id)
+        {
+            var modelData = _deviceModelService.GetSingle(x => x.Id == id);
             return MappingHelper<DeviceModel>.Convert(modelData);
         }
 

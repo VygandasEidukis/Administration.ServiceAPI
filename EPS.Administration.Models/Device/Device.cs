@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace EPS.Administration.Models.Device
 {
@@ -55,18 +54,22 @@ namespace EPS.Administration.Models.Device
         /// Defines location of institution that device is owned by
         /// </summary>
         public DeviceLocation OwnedBy { get; set; }
+
         /// <summary>
         /// Defines location of institution where device was on purchase
         /// </summary>
         public DeviceLocation InitialLocation { get; set; }
+
         /// <summary>
         /// SF date
         /// </summary>
         public DateTime SfDate { get; set; }
+
         /// <summary>
         /// Sf number
         /// </summary>
         public string SfNumber { get; set; }
+
         /// <summary>
         /// Additional notes
         /// </summary>

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using EPS.Administration.Models.Account;
+using EPS.Administration.Models.APICommunication;
 using EPS.Administration.ServiceAPI.Helper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ namespace EPS.Administration.ServiceAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [AllowAnonymous]
     public class UserController : ControllerBase
     {
         private IUserService _userService;
@@ -22,17 +23,17 @@ namespace EPS.Administration.ServiceAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public async Task<IActionResult> Authenticate([FromBody] AuthenticationModel model)
+        public async Task<IActionResult> Authenticate([FromBody] User model)
         {
             var user = await _userService.Authenticate(model.Username, model.Password);
 
             if (user == null)
             {
                 //TODO: MEDIUM Add logging.
-                return BadRequest(new { message = "Username or password is incorrect" });
+                return Ok(new LogInResponse { Message = "User name or password is incorrect", Error = ErrorCode.BadUsernameOrPassword });
             }
 
-            return Ok(user);
+            return Ok(new LogInResponse(user.Token));
         }
     }
 }

@@ -64,7 +64,7 @@ namespace EPS.Administration.DAL.Services.DeviceEventService
                 StatusId = classification.Status.Id
             };
         }
-        private DeviceEvent ToDTO(DeviceEventData classification)
+        public DeviceEvent ToDTO(DeviceEventData classification)
         {
             return new DeviceEvent()
             {

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EPS.Administration.Models.Device
+﻿namespace EPS.Administration.Models.Device
 {
     public class Group : IRevisionable
     {
         public int Id { get; set; }
         public int Revision { get; set; }
+
         /// <summary>
         /// Short code for the group identification
         /// </summary>

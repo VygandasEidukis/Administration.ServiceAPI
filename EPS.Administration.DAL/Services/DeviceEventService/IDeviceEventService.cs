@@ -12,5 +12,6 @@ namespace EPS.Administration.DAL.Services.DeviceEventService
         void AddOrUpdate(IEnumerable<DeviceEvent> classifications);
         DeviceEvent Get(string code);
         DeviceEventData ToDTO(DeviceEvent classification);
+        DeviceEvent ToDTO(DeviceEventData classification);
     }
 }

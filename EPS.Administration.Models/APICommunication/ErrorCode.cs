@@ -3,6 +3,8 @@
     public enum ErrorCode : int
     {
         OK = 0,
-        InternalError = 1
+        InternalError = 1,
+        BadUsernameOrPassword = 2,
+        ServiceError = 3,
     }
 }

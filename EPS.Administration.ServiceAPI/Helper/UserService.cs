@@ -17,10 +17,11 @@ namespace EPS.Administration.ServiceAPI.Helper
         public async Task<User> Authenticate(string username, string password)
         {
             var user = await Task.Run(() => _users.SingleOrDefault(x => x.Username == username && x.Password == password));
-            user.TruncateSecretData();
             // return null if user not found
             if (user == null)
                 return null;
+
+            user.TruncateSecretData();
 
             // authentication successful so return user details without password
             return user;
