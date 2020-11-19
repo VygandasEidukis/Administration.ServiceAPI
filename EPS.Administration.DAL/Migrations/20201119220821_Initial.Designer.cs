@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EPS.Administration.DAL.Migrations
 {
     [DbContext(typeof(DeviceContext))]
-    [Migration("20201107223936_Initial")]
+    [Migration("20201119220821_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -120,6 +120,16 @@ namespace EPS.Administration.DAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClassificationId");
+
+                    b.HasIndex("InitialLocationId");
+
+                    b.HasIndex("ModelId");
+
+                    b.HasIndex("OwnedById");
+
+                    b.HasIndex("StatusId");
+
                     b.ToTable("Devices");
                 });
 
@@ -136,7 +146,7 @@ namespace EPS.Administration.DAL.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("DeviceDataId")
+                    b.Property<int>("DeviceDataId")
                         .HasColumnType("int");
 
                     b.Property<int?>("GroupId")
@@ -154,6 +164,10 @@ namespace EPS.Administration.DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DeviceDataId");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("StatusId");
 
                     b.ToTable("DeviceEvents");
                 });
@@ -206,11 +220,56 @@ namespace EPS.Administration.DAL.Migrations
                     b.ToTable("DeviceModels");
                 });
 
+            modelBuilder.Entity("EPS.Administration.DAL.Data.DeviceData", b =>
+                {
+                    b.HasOne("EPS.Administration.DAL.Data.ClassificationData", "Classification")
+                        .WithMany()
+                        .HasForeignKey("ClassificationId");
+
+                    b.HasOne("EPS.Administration.DAL.Data.DeviceLocationData", "InitialLocation")
+                        .WithMany()
+                        .HasForeignKey("InitialLocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EPS.Administration.DAL.Data.DeviceModelData", "Model")
+                        .WithMany()
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EPS.Administration.DAL.Data.DeviceLocationData", "OwnedBy")
+                        .WithMany()
+                        .HasForeignKey("OwnedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EPS.Administration.DAL.Data.DetailedStatusData", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("EPS.Administration.DAL.Data.DeviceEventData", b =>
                 {
                     b.HasOne("EPS.Administration.DAL.Data.DeviceData", null)
                         .WithMany("DeviceEvents")
-                        .HasForeignKey("DeviceDataId");
+                        .HasForeignKey("DeviceDataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EPS.Administration.DAL.Data.DeviceLocationData", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EPS.Administration.DAL.Data.DetailedStatusData", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

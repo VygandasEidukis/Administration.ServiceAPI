@@ -13,21 +13,22 @@ namespace EPS.Administration.DAL.Data
         public int BaseId { get; set; }
         public string SerialNumber { get; set; }
         public string Notes { get; set; }
-        [ForeignKey("Model_FK")]
         public int ModelId { get; set; }
         public DateTime AcquisitionDate { get; set; }
         public string InvoiceNumber { get; set; }
         public IEnumerable<DeviceEventData> DeviceEvents { get; set; }
-        [ForeignKey("Classification_FK")]
         public int? ClassificationId { get; set; }
-        [ForeignKey("Status_FK")]
         public int StatusId { get; set; }
-        [ForeignKey("OwnedBy_FK")]
         public int OwnedById { get; set; }
-        [ForeignKey("InitialLocationId_FK")]
         public int InitialLocationId { get; set; }
         public DateTime SfDate { get; set; }
         public string SfNumber { get; set; }
         public string AdditionalNotes { get; set; }
+
+        public DetailedStatusData Status { get; set; }
+        public DeviceModelData Model { get; set; }
+        public ClassificationData Classification { get; set; }
+        public DeviceLocationData InitialLocation { get; set; }
+        public DeviceLocationData OwnedBy { get; set; }
     }
 }

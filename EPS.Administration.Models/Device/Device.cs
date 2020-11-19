@@ -38,7 +38,27 @@ namespace EPS.Administration.Models.Device
         /// <summary>
         /// Event revisions of the device
         /// </summary>
-        public IEnumerable<DeviceEvent> DeviceEvents { get; set; }
+        public List<DeviceEvent> DeviceEvents { get; set; }
+
+        public string LastUpdate
+        {
+            get
+            {
+                return DeviceEvents == null || DeviceEvents.Count == 0 ? 
+                    AcquisitionDate.ToString("yyyy-MM-dd") : 
+                    DeviceEvents[DeviceEventsCount-1].Date.ToString("yyyy-MM-dd");
+            }
+        }
+
+        /// <summary>
+        /// Gets number of device events
+        /// </summary>
+        public int DeviceEventsCount { 
+            get 
+            {
+                return DeviceEvents == null ? 0 : DeviceEvents.Count; 
+            } 
+        }
 
         /// <summary>
         /// Grouping classifications of the device

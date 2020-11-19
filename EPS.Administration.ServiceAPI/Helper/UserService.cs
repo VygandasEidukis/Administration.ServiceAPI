@@ -21,8 +21,6 @@ namespace EPS.Administration.ServiceAPI.Helper
             if (user == null)
                 return null;
 
-            user.TruncateSecretData();
-
             // authentication successful so return user details without password
             return user;
         }

@@ -1,4 +1,5 @@
-﻿using EPS.Administration.DAL.Data;
+﻿using AutoMapper;
+using EPS.Administration.DAL.Data;
 using EPS.Administration.Models.Device;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,20 +9,22 @@ namespace EPS.Administration.DAL.Services.DeviceModelService
     public class DeviceModelService : IDeviceModelService
     {
         private readonly IBaseService<DeviceModelData> _deviceModelService;
+        private readonly IMapper _mapper;
 
-        public DeviceModelService(IBaseService<DeviceModelData> baseService)
+        public DeviceModelService(IBaseService<DeviceModelData> baseService, IMapper mapper)
         {
             _deviceModelService = baseService;
+            _mapper = mapper;
         }
 
         public void AddOrUpdate(DeviceModel model)
         {
-            _deviceModelService.AddOrUpdate(ToDTO(model));
+            _deviceModelService.AddOrUpdate(_mapper.Map<DeviceModelData>(model));
         }
 
         public void AddOrUpdate(IEnumerable<DeviceModel> models)
         {
-            var dtos = models.Select(x => ToDTO(x));
+            var dtos = models.Select(x => _mapper.Map<DeviceModelData>(x));
             foreach (var dto in dtos)
             {
                 var item = _deviceModelService.GetSingle(x => x.Name == dto.Name);
@@ -34,31 +37,13 @@ namespace EPS.Administration.DAL.Services.DeviceModelService
         public DeviceModel Get(string model)
         {
             var modelData = _deviceModelService.GetSingle(x => x.Name == model);
-            return MappingHelper<DeviceModel>.Convert(modelData);
+            return _mapper.Map<DeviceModel>(modelData);
         }
 
         public DeviceModel GetById(int id)
         {
             var modelData = _deviceModelService.GetSingle(x => x.Id == id);
-            return MappingHelper<DeviceModel>.Convert(modelData);
-        }
-
-        public  DeviceModelData ToDTO(DeviceModel deviceModel)
-        {
-            if (deviceModel == null)
-            {
-                return null;
-            }
-
-            var model = new DeviceModelData()
-            {
-                Id = deviceModel.Id,
-                Revision = deviceModel.Revision,
-                Name = deviceModel.Name,
-                Description = deviceModel.Description,
-            };
-
-            return model;
+            return _mapper.Map<DeviceModel>(modelData);
         }
     }
 }

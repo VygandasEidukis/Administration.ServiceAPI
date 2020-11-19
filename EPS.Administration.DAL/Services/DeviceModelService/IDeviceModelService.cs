@@ -10,6 +10,5 @@ namespace EPS.Administration.DAL.Services.DeviceModelService
         void AddOrUpdate(IEnumerable<DeviceModel> modelsData);
         DeviceModel Get(string modelText);
         DeviceModel GetById(int id);
-        DeviceModelData ToDTO(DeviceModel model);
     }
 }

@@ -1,4 +1,5 @@
-﻿using EPS.Administration.DAL.Data;
+﻿using AutoMapper;
+using EPS.Administration.DAL.Data;
 using EPS.Administration.DAL.Services.ClassificationService;
 using EPS.Administration.DAL.Services.DetailedStatusService;
 using EPS.Administration.DAL.Services.DeviceEventService;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Text;
 
 namespace EPS.Administration.DAL.Services.DeviceService
@@ -21,13 +23,15 @@ namespace EPS.Administration.DAL.Services.DeviceService
         private readonly IDeviceLocationService _locationService;
         private readonly IDeviceModelService _modelService;
         private readonly IDeviceEventService _deviceEventService;
+        private readonly IMapper _mapper;
 
         public DeviceService(IBaseService<DeviceData> baseService,
                              IDetailedStatusService statusService,
                              IClassificationService classificationService,
                              IDeviceLocationService locationService,
                              IDeviceModelService modelService,
-                             IDeviceEventService deviceEventService)
+                             IDeviceEventService deviceEventService,
+                             IMapper mapper)
         {
             _deviceService = baseService;
             _statusService = statusService;
@@ -35,11 +39,12 @@ namespace EPS.Administration.DAL.Services.DeviceService
             _locationService = locationService;
             _modelService = modelService;
             _deviceEventService = deviceEventService;
+            _mapper = mapper;
         }
 
         public void AddOrUpdate(Device device)
         {
-            _deviceService.AddOrUpdate(ToDTO(device));
+            _deviceService.AddOrUpdate(_mapper.Map<DeviceData>(device));
         }
 
         public void AddOrUpdate(IEnumerable<Device> devices)
@@ -47,7 +52,7 @@ namespace EPS.Administration.DAL.Services.DeviceService
             int id = 0;
             try
             {
-                var dtoDevices = devices.Select(device => ToDTO(device));
+                var dtoDevices = devices.Select(device => _mapper.Map<DeviceData>(device));
 
                 if (!dtoDevices.Any())
                 {
@@ -58,6 +63,20 @@ namespace EPS.Administration.DAL.Services.DeviceService
                 {
                     var item = _deviceService.GetSingle(x => x.SerialNumber == dto.SerialNumber);
                     dto.Id = item == null ? 0 : item.Id;
+
+                    dto.Status = null;
+                    dto.OwnedBy = null;
+                    dto.InitialLocation = null;
+                    dto.Classification = null;
+                    dto.Model = null;
+                    
+                    foreach (var eve in dto.DeviceEvents)
+                    {
+                        eve.Location = null;
+                        eve.Status = null;
+                    }
+
+
                     _deviceService.AddOrUpdate(dto);
                 }
                 _deviceService.Save();
@@ -72,88 +91,38 @@ namespace EPS.Administration.DAL.Services.DeviceService
         public Device Get(string serialNumber)
         {
             var device = _deviceService.GetSingle(x => x.SerialNumber == serialNumber);
-            return MappingHelper<Device>.Convert(device);
+            return _mapper.Map<Device>(device);
         }
 
-        public List<Device> Get(int from, int top)
+        public List<Device> Get(int from, int count, string query, string orderbyQuery, bool reversed)
         {
-            var devices = _deviceService.Get().Where(x => x.BaseId == 0).Skip(from).Take(top);
-            devices = devices.Select(d => _deviceService.Get().Where(x => x.BaseId == d.Id).LastOrDefault());
-            List<Device> mappedDevices = new List<Device>();
+            var devices = _deviceService.Get();
+
+            var mappedDevices = new List<Device>();
             foreach (var device in devices)
             {
-                var dev = ToDto(device);
-                mappedDevices.Add(dev);
+                mappedDevices.Add(_mapper.Map<Device>(device));
             }
-            return mappedDevices;
+
+            var qDevices = mappedDevices.AsQueryable().Where(query);
+            if (!string.IsNullOrEmpty(orderbyQuery))
+            {
+                if (reversed)
+                {
+                    qDevices = qDevices.OrderByDescending(x => orderbyQuery);
+                }
+                else
+                {
+                    qDevices = qDevices.OrderBy(x => orderbyQuery);
+                }
+            }
+
+            return qDevices.Skip(from).Take(count).ToList();
         }
 
         public int BaseDeviceCount()
         {
             return _deviceService.Get().Where(x => x.BaseId == 0).Count();
-        }
-
-        private Device ToDto(DeviceData device)
-        {
-            var classification = _classificationService.Get(device.ClassificationId.Value);
-            var initialLocation = _locationService.GetLocation(device.InitialLocationId);
-            var model = _modelService.GetById(device.ModelId);
-            var ownedBy = _locationService.GetLocation(device.OwnedById);
-            var status = _statusService.GetStatus(device.StatusId);
-            var dev = new Device()
-            {
-                AcquisitionDate = device.AcquisitionDate,
-                AdditionalNotes = device.AdditionalNotes,
-                BaseId = device.BaseId,
-                Classification = classification,
-                Id = device.Id,
-                InitialLocation = initialLocation,
-                InvoiceNumber = device.InvoiceNumber,
-                Model = model,
-                Notes = device.Notes,
-                OwnedBy = ownedBy,
-                Revision = device.Revision,
-                SerialNumber = device.SerialNumber,
-                SfDate = device.SfDate,
-                SfNumber = device.SfNumber,
-                Status = status,
-                DeviceEvents = device.DeviceEvents.Select(x => _deviceEventService.ToDTO(x)).ToList()
-            };
-            return dev;
-        }
-
-        public DeviceData ToDTO(Device device)
-        {
-            if (device == null)
-            {
-                return null;
-            }
-
-            var classification = _classificationService.Get(device.Classification.Code);
-            var initialLocation = _locationService.GetLocation(device.InitialLocation.Name);
-            var model = _modelService.Get(device.Model.Name);
-            var ownedBy = _locationService.GetLocation(device.OwnedBy.Name);
-            var status = _statusService.GetStatus(device.Status.Status);
-            var devicetoData = new DeviceData()
-            {
-                AcquisitionDate = device.AcquisitionDate,
-                AdditionalNotes = device.AdditionalNotes,
-                BaseId = device.BaseId,
-                ClassificationId = classification.Id,
-                DeviceEvents = device.DeviceEvents.Select(x => _deviceEventService.ToDTO(x)).ToList(),
-                Id = device.Id,
-                InitialLocationId = initialLocation.Id,
-                InvoiceNumber = device.InvoiceNumber,
-                ModelId = model.Id,
-                Notes = device.Notes,
-                OwnedById = ownedBy.Id,
-                Revision = device.Revision,
-                SerialNumber = device.SerialNumber,
-                SfDate = device.SfDate,
-                SfNumber = device.SfNumber,
-                StatusId = status.Id,
-            };
-            return devicetoData;
         }
     }
 }

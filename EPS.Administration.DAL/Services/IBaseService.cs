@@ -11,8 +11,9 @@ namespace EPS.Administration.DAL.Services
     public interface IBaseService<TEntity> where TEntity : class
     {
         DeviceContext context { get; }
-        IEnumerable<TEntity> Get();
-        IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> func);
+        List<TEntity> Get();
+        List<TEntity> Get(Expression<Func<TEntity, bool>> func);
+        List<TEntity> Get(string query);
         TEntity GetSingle(Expression<Func<TEntity, bool>> func);
         void AddOrUpdate(TEntity entity);
         void Delete(int id, int revision);

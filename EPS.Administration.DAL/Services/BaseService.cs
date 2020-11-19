@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -68,12 +69,21 @@ namespace EPS.Administration.DAL.Services
             _dbEntity.Remove(model);
         }
 
-        public IEnumerable<TEntity> Get()
+        public List<TEntity> Get()
         {
             return _dbEntity.ToList();
         }
+        public List<TEntity> Get(string query)
+        {
+            if (string.IsNullOrEmpty(query))
+            {
+                return null;
+            }
 
-        public IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> func)
+            return _dbEntity.Where(query).ToList();
+        }
+
+        public List<TEntity> Get(Expression<Func<TEntity, bool>> func)
         {
             return func == null ? _cachedEntities.ToList() : _cachedEntities.Where(func).ToList();
         }

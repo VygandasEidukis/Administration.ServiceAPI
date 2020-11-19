@@ -1,3 +1,4 @@
+using AutoMapper;
 using EPS.Administration.DAL;
 using EPS.Administration.DAL.Services.ClassificationService;
 using EPS.Administration.DAL.Services.DetailedStatusService;
@@ -46,6 +47,8 @@ namespace EPS.Administration.ServiceAPI
             services.AddScoped<IDeviceLocationService, DeviceLocationService>();
             services.AddScoped<IDeviceService, DeviceService>();
             services.AddScoped<IDeviceEventService, DeviceEventService>();
+
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

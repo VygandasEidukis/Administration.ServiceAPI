@@ -1,4 +1,5 @@
-﻿using EPS.Administration.DAL.Data;
+﻿using AutoMapper;
+using EPS.Administration.DAL.Data;
 using EPS.Administration.Models.Device;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,21 +9,23 @@ namespace EPS.Administration.DAL.Services.DetailedStatusService
     public class DetailedStatusService : IDetailedStatusService
     {
         private readonly IBaseService<DetailedStatusData> _detailedStatusService;
+        private readonly IMapper _mapper;
 
-        public DetailedStatusService(IBaseService<DetailedStatusData> baseService)
+        public DetailedStatusService(IBaseService<DetailedStatusData> baseService, IMapper mapper)
         {
             _detailedStatusService = baseService;
+            _mapper = mapper;
         }
 
         public void AddOrUpdate(DetailedStatus status)
         {
-            _detailedStatusService.AddOrUpdate(ToDTO(status));
+            _detailedStatusService.AddOrUpdate(_mapper.Map<DetailedStatusData>(status));
             _detailedStatusService.Save();
         }
 
         public void AddOrUpdate(IEnumerable<DetailedStatus> statuses)
         {
-            var dtos = statuses.Select(x => ToDTO(x));
+            var dtos = statuses.Select(x => _mapper.Map<DetailedStatusData>(x));
             foreach(var dto in dtos)
             {
                 var item = _detailedStatusService.GetSingle(x=>x.Status == dto.Status);
@@ -35,31 +38,13 @@ namespace EPS.Administration.DAL.Services.DetailedStatusService
         public DetailedStatus GetStatus(string status)
         {
             var item = _detailedStatusService.GetSingle(x => x.Status == status);
-            return MappingHelper<DetailedStatus>.Convert(item);
+            return _mapper.Map<DetailedStatus>(item);
         }
 
         public DetailedStatus GetStatus(int id)
         {
             var item = _detailedStatusService.GetSingle(x => x.Id == id);
-            return MappingHelper<DetailedStatus>.Convert(item);
-        }
-
-        public DetailedStatusData ToDTO(DetailedStatus status)
-        {
-            if(status == null)
-            {
-                return null;
-            }
-
-            var dataStatus = new DetailedStatusData()
-            {
-                Id = status.Id,
-                Revision = status.Revision,
-                Description = status.Description,
-                Status = status.Status,
-            };
-
-            return dataStatus;
+            return _mapper.Map<DetailedStatus>(item);
         }
     }
 }

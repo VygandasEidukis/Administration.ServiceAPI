@@ -38,7 +38,7 @@ namespace EPS.Administration.ServiceAPI.Helper
                 return AuthenticateResult.NoResult();
             }
 
-            if (!Request.Headers.ContainsKey("Authorization"))
+            if (!Request.Headers.ContainsKey("BAuth"))
             {
                 return AuthenticateResult.Fail("Missing Authorization Header");
             }
@@ -46,7 +46,7 @@ namespace EPS.Administration.ServiceAPI.Helper
             User user = null;
             try
             {
-                var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
+                var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["BAuth"]);
                 var credentialBytes = Convert.FromBase64String(authHeader.Parameter);
                 var credentials = Encoding.UTF8.GetString(credentialBytes).Split(new[] { ':' }, 2);
                 var username = credentials[0];

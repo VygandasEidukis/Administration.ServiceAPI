@@ -1,4 +1,5 @@
-﻿using EPS.Administration.DAL.Data;
+﻿using AutoMapper;
+using EPS.Administration.DAL.Data;
 using EPS.Administration.Models.Device;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,20 +9,22 @@ namespace EPS.Administration.DAL.Services.DeviceLocationService
     public class DeviceLocationService : IDeviceLocationService
     {
         private readonly IBaseService<DeviceLocationData> _deviceLocationService;
+        private readonly IMapper _mapper;
 
-        public DeviceLocationService(IBaseService<DeviceLocationData> baseService)
+        public DeviceLocationService(IBaseService<DeviceLocationData> baseService, IMapper mapper)
         {
             _deviceLocationService = baseService;
+            _mapper = mapper;
         }
 
         public void AddOrUpdate(DeviceLocation classification)
         {
-            _deviceLocationService.AddOrUpdate(ToDTO(classification));
+            _deviceLocationService.AddOrUpdate(_mapper.Map<DeviceLocationData>(classification));
         }
 
         public void AddOrUpdate(IEnumerable<DeviceLocation> locations)
         {
-            var dtos = locations.Select(x => ToDTO(x));
+            var dtos = locations.Select(x => _mapper.Map<DeviceLocationData>(x));
             foreach (var dto in dtos)
             {
                 var item = _deviceLocationService.GetSingle(x => x.Name == dto.Name);
@@ -34,31 +37,13 @@ namespace EPS.Administration.DAL.Services.DeviceLocationService
         public DeviceLocation GetLocation(string name)
         {
             var location = _deviceLocationService.GetSingle(x => x.Name == name);
-            return MappingHelper<DeviceLocation>.Convert(location);
+            return _mapper.Map<DeviceLocation>(location);
         }
 
         public DeviceLocation GetLocation(int id)
         {
             var location = _deviceLocationService.GetSingle(x => x.Id == id);
-            return MappingHelper<DeviceLocation>.Convert(location);
-        }
-
-        public DeviceLocationData ToDTO(DeviceLocation deviceModel)
-        {
-            if (deviceModel == null)
-            {
-                return null;
-            }
-
-            var model = new DeviceLocationData()
-            {
-                Id = deviceModel.Id,
-                Revision = deviceModel.Revision,
-                Name = deviceModel.Name,
-                Details = deviceModel.Details,
-            };
-
-            return model;
+            return _mapper.Map<DeviceLocation>(location);
         }
     }
 }

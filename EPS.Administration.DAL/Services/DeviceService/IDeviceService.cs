@@ -9,8 +9,7 @@ namespace EPS.Administration.DAL.Services.DeviceService
         void AddOrUpdate(Device device);
         void AddOrUpdate(IEnumerable<Device> devices);
         Device Get(string serialNumber);
-        List<Device> Get(int from, int top);
+        List<Device> Get(int from, int count, string query, string orderbyQuery, bool reversed);
         int BaseDeviceCount();
-        DeviceData ToDTO(Device device);
     }
 }

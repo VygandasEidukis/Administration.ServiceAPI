@@ -1,4 +1,5 @@
-﻿using EPS.Administration.DAL.Context;
+﻿using AutoMapper;
+using EPS.Administration.DAL.Context;
 using EPS.Administration.DAL.Data;
 using EPS.Administration.DAL.Services;
 using EPS.Administration.DAL.Services.ClassificationService;
@@ -23,6 +24,7 @@ namespace EPS.Administration.DAL
             services.AddScoped<IBaseService<DeviceLocationData>, BaseService<DeviceLocationData>>();
             services.AddScoped<IBaseService<DeviceData>, BaseService<DeviceData>>();
             services.AddScoped<IBaseService<DeviceEventData>, BaseService<DeviceEventData>>();
+            services.AddAutoMapper(typeof(ServiceCollectionExtensions));
 
             return services;
         }

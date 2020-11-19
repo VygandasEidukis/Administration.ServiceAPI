@@ -56,6 +56,22 @@ namespace EPS.Administration.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Statuses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Revision = table.Column<int>(nullable: false),
+                    BaseId = table.Column<int>(nullable: false),
+                    Status = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Statuses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Devices",
                 columns: table => new
                 {
@@ -79,22 +95,36 @@ namespace EPS.Administration.DAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Devices", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Statuses",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Revision = table.Column<int>(nullable: false),
-                    BaseId = table.Column<int>(nullable: false),
-                    Status = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Statuses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Devices_Classifications_ClassificationId",
+                        column: x => x.ClassificationId,
+                        principalTable: "Classifications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Devices_DeviceLocations_InitialLocationId",
+                        column: x => x.InitialLocationId,
+                        principalTable: "DeviceLocations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Devices_DeviceModels_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "DeviceModels",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Devices_DeviceLocations_OwnedById",
+                        column: x => x.OwnedById,
+                        principalTable: "DeviceLocations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_Devices_Statuses_StatusId",
+                        column: x => x.StatusId,
+                        principalTable: "Statuses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -109,7 +139,7 @@ namespace EPS.Administration.DAL.Migrations
                     Date = table.Column<DateTime>(nullable: false),
                     LocationId = table.Column<int>(nullable: false),
                     GroupId = table.Column<int>(nullable: true),
-                    DeviceDataId = table.Column<int>(nullable: true)
+                    DeviceDataId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -119,22 +149,72 @@ namespace EPS.Administration.DAL.Migrations
                         column: x => x.DeviceDataId,
                         principalTable: "Devices",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_DeviceEvents_DeviceLocations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "DeviceLocations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_DeviceEvents_Statuses_StatusId",
+                        column: x => x.StatusId,
+                        principalTable: "Statuses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeviceEvents_DeviceDataId",
                 table: "DeviceEvents",
                 column: "DeviceDataId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeviceEvents_LocationId",
+                table: "DeviceEvents",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeviceEvents_StatusId",
+                table: "DeviceEvents",
+                column: "StatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Devices_ClassificationId",
+                table: "Devices",
+                column: "ClassificationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Devices_InitialLocationId",
+                table: "Devices",
+                column: "InitialLocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Devices_ModelId",
+                table: "Devices",
+                column: "ModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Devices_OwnedById",
+                table: "Devices",
+                column: "OwnedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Devices_StatusId",
+                table: "Devices",
+                column: "StatusId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Classifications");
+                name: "DeviceEvents");
 
             migrationBuilder.DropTable(
-                name: "DeviceEvents");
+                name: "Devices");
+
+            migrationBuilder.DropTable(
+                name: "Classifications");
 
             migrationBuilder.DropTable(
                 name: "DeviceLocations");
@@ -144,9 +224,6 @@ namespace EPS.Administration.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Statuses");
-
-            migrationBuilder.DropTable(
-                name: "Devices");
         }
     }
 }
