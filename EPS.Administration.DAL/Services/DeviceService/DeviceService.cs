@@ -5,13 +5,12 @@ using EPS.Administration.DAL.Services.DetailedStatusService;
 using EPS.Administration.DAL.Services.DeviceEventService;
 using EPS.Administration.DAL.Services.DeviceLocationService;
 using EPS.Administration.DAL.Services.DeviceModelService;
+using EPS.Administration.Models.APICommunication.Filter;
 using EPS.Administration.Models.Device;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Text;
 
 namespace EPS.Administration.DAL.Services.DeviceService
 {
@@ -94,7 +93,7 @@ namespace EPS.Administration.DAL.Services.DeviceService
             return _mapper.Map<Device>(device);
         }
 
-        public List<Device> Get(int from, int count, string query, string orderbyQuery, bool reversed)
+        public List<Device> Get(DeviceFilter filter)
         {
             var devices = _deviceService.Get();
 
@@ -104,20 +103,27 @@ namespace EPS.Administration.DAL.Services.DeviceService
                 mappedDevices.Add(_mapper.Map<Device>(device));
             }
 
-            var qDevices = mappedDevices.AsQueryable().Where(query);
-            if (!string.IsNullOrEmpty(orderbyQuery))
+            var qDevices = mappedDevices.AsQueryable();
+            var query = filter.GetQuery();
+
+            if (!string.IsNullOrEmpty(query) && query.Length > 5)
             {
-                if (reversed)
+                qDevices = qDevices.Where(query);
+            }
+
+            if (!string.IsNullOrEmpty(filter.OrderBy))
+            {
+                if (filter.ReverseOrder)
                 {
-                    qDevices = qDevices.OrderByDescending(x => orderbyQuery);
+                    qDevices = qDevices.OrderByDescending(x => filter.OrderBy);
                 }
                 else
                 {
-                    qDevices = qDevices.OrderBy(x => orderbyQuery);
+                    qDevices = qDevices.OrderBy(x => filter.OrderBy);
                 }
             }
 
-            return qDevices.Skip(from).Take(count).ToList();
+            return qDevices.Skip(filter.PageSize * filter.Page).Take(filter.PageSize).ToList();
         }
 
         public int BaseDeviceCount()

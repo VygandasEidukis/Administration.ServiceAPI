@@ -1,5 +1,6 @@
 ﻿using EPS.Administration.DAL.Services.DeviceService;
 using EPS.Administration.Models.APICommunication;
+using EPS.Administration.Models.APICommunication.Filter;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EPS.Administration.ServiceAPI.Controllers
@@ -15,22 +16,23 @@ namespace EPS.Administration.ServiceAPI.Controllers
             _deviceService = deviceService;
         }
 
-        [HttpGet]
-        public ActionResult<GetDevicesResponse> Get(int from, int count, string query, string orderQuery, bool reversed)
+        [HttpPost("GetFiltered")]
+
+        public ActionResult<GetDevicesResponse> GetDevices(string token, DeviceFilter filter)
         {
-            var devices = _deviceService.Get(from, count, query, orderQuery, reversed);
+            var devices = _deviceService.Get(filter);
             var overall = _deviceService.BaseDeviceCount();
-            int pages = overall / count;
-            if ((overall % count) != 0)
+            int pages = overall / filter.PageSize;
+            if ((overall % filter.PageSize) != 0)
             {
                 pages++;
             }
 
             return new GetDevicesResponse()
             {
-                Count = count,
+                Count = filter.PageSize,
                 Devices = devices,
-                From = from,
+                From = filter.PageSize * filter.Page,
                 Overall = overall,
                 Pages = pages
             };
