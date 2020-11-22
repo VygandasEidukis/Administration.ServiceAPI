@@ -1,4 +1,5 @@
-﻿using EPS.Administration.Models.APICommunication.Filter;
+﻿using EPS.Administration.Models.APICommunication;
+using EPS.Administration.Models.APICommunication.Filter;
 using EPS.Administration.Models.Device;
 using System.Collections.Generic;
 
@@ -11,5 +12,6 @@ namespace EPS.Administration.DAL.Services.DeviceService
         Device Get(string serialNumber);
         List<Device> Get(DeviceFilter filter);
         int BaseDeviceCount();
+        DeviceMetadataResponse GetMetadata();
     }
 }

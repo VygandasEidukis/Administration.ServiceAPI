@@ -161,7 +161,7 @@ namespace EPS.Administration.Controllers.FileController
                         //TODO HIGH Add Log
                         continue;
                     }
-                    device.OwnedBy = _deviceLocationService.GetLocation(ownedByText);
+                    device.OwnedBy = _deviceLocationService.Get(ownedByText);
 
                     if (device.OwnedBy == null)
                     {
@@ -197,7 +197,7 @@ namespace EPS.Administration.Controllers.FileController
                         //TODO HIGH Add Log
                         continue;
                     }
-                    var location = _deviceLocationService.GetLocation(locationText);
+                    var location = _deviceLocationService.Get(locationText);
                     if (location == null)
                     {
                         //TODO HIGH Add Log
@@ -291,7 +291,7 @@ namespace EPS.Administration.Controllers.FileController
                     times++;
                     continue;
                 }
-                var location = _deviceLocationService.GetLocation(locationText);
+                var location = _deviceLocationService.Get(locationText);
                 if (location == null)
                 {
                     //TODO HIGH Add Log

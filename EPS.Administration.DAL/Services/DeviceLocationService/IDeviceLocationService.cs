@@ -1,5 +1,4 @@
-﻿using EPS.Administration.DAL.Data;
-using EPS.Administration.Models.Device;
+﻿using EPS.Administration.Models.Device;
 using System.Collections.Generic;
 
 namespace EPS.Administration.DAL.Services.DeviceLocationService
@@ -8,7 +7,8 @@ namespace EPS.Administration.DAL.Services.DeviceLocationService
     {
         void AddOrUpdate(DeviceLocation location);
         void AddOrUpdate(IEnumerable<DeviceLocation> locations);
-        DeviceLocation GetLocation(string name);
-        DeviceLocation GetLocation(int id);
+        DeviceLocation Get(string name);
+        DeviceLocation Get(int id);
+        List<DeviceLocation> Get();
     }
 }

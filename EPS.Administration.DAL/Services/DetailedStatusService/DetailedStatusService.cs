@@ -35,6 +35,14 @@ namespace EPS.Administration.DAL.Services.DetailedStatusService
             _detailedStatusService.Save();
         }
 
+        public List<DetailedStatus> Get()
+        {
+            var statusDTO = _detailedStatusService.GetLatest();
+
+            List<DetailedStatus> statuses = statusDTO.Select(x => _mapper.Map<DetailedStatus>(x)).ToList();
+            return statuses;
+        }
+
         public DetailedStatus GetStatus(string status)
         {
             var item = _detailedStatusService.GetSingle(x => x.Status == status);

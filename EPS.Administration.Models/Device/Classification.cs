@@ -23,5 +23,13 @@
         {
             return Model;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is Classification))
+                return false;
+
+            return ((Classification)obj).Id == this.Id;
+        }
     }
 }

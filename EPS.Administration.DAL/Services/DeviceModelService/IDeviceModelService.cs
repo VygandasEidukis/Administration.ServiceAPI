@@ -9,6 +9,7 @@ namespace EPS.Administration.DAL.Services.DeviceModelService
         void AddOrUpdate(DeviceModel modelData);
         void AddOrUpdate(IEnumerable<DeviceModel> modelsData);
         DeviceModel Get(string modelText);
+        List<DeviceModel> Get();
         DeviceModel GetById(int id);
     }
 }

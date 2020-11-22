@@ -14,5 +14,18 @@
         /// Device status description
         /// </summary>
         public string Description { get; set; }
+
+        public override string ToString()
+        {
+            return Status;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is DetailedStatus))
+                return false;
+
+            return ((DetailedStatus)obj).Id == this.Id;
+        }
     }
 }

@@ -11,5 +11,13 @@
         {
             return Name;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is DeviceModel))
+                return false;
+
+            return ((DeviceModel)obj).Id == this.Id;
+        }
     }
 }

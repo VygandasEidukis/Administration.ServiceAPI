@@ -20,5 +20,6 @@ namespace EPS.Administration.DAL.Services.ClassificationService
         /// <param name="id">group id</param>
         /// <returns></returns>
         Classification Get(int id);
+        List<Classification> Get();
     }
 }

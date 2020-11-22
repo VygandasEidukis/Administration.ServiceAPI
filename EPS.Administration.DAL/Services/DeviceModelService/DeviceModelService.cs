@@ -40,6 +40,14 @@ namespace EPS.Administration.DAL.Services.DeviceModelService
             return _mapper.Map<DeviceModel>(modelData);
         }
 
+        public List<DeviceModel> Get()
+        {
+            var modelDto = _deviceModelService.GetLatest();
+
+            List<DeviceModel> models = modelDto.Select(x => _mapper.Map<DeviceModel>(x)).ToList();
+            return models;
+        }
+
         public DeviceModel GetById(int id)
         {
             var modelData = _deviceModelService.GetSingle(x => x.Id == id);

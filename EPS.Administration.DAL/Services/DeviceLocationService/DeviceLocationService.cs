@@ -34,16 +34,24 @@ namespace EPS.Administration.DAL.Services.DeviceLocationService
             _deviceLocationService.Save();
         }
 
-        public DeviceLocation GetLocation(string name)
+        public DeviceLocation Get(string name)
         {
             var location = _deviceLocationService.GetSingle(x => x.Name == name);
             return _mapper.Map<DeviceLocation>(location);
         }
 
-        public DeviceLocation GetLocation(int id)
+        public DeviceLocation Get(int id)
         {
             var location = _deviceLocationService.GetSingle(x => x.Id == id);
             return _mapper.Map<DeviceLocation>(location);
+        }
+
+        public List<DeviceLocation> Get()
+        {
+            var locationsDto = _deviceLocationService.GetLatest();
+
+            List<DeviceLocation> locations = locationsDto.Select(x => _mapper.Map<DeviceLocation>(x)).ToList();
+            return locations;
         }
     }
 }

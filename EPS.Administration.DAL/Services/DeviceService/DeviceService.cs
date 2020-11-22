@@ -5,6 +5,7 @@ using EPS.Administration.DAL.Services.DetailedStatusService;
 using EPS.Administration.DAL.Services.DeviceEventService;
 using EPS.Administration.DAL.Services.DeviceLocationService;
 using EPS.Administration.DAL.Services.DeviceModelService;
+using EPS.Administration.Models.APICommunication;
 using EPS.Administration.Models.APICommunication.Filter;
 using EPS.Administration.Models.Device;
 using System;
@@ -129,6 +130,19 @@ namespace EPS.Administration.DAL.Services.DeviceService
         public int BaseDeviceCount()
         {
             return _deviceService.Get().Where(x => x.BaseId == 0).Count();
+        }
+
+        public DeviceMetadataResponse GetMetadata()
+        {
+            var metadata = new DeviceMetadataResponse()
+            {
+                Classifications = _classificationService.Get(),
+                Locations = _locationService.Get(),
+                Models = _modelService.Get(),
+                Statuses = _statusService.Get()
+            };
+
+            return metadata;
         }
     }
 }

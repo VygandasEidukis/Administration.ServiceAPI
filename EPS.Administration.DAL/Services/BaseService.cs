@@ -113,6 +113,29 @@ namespace EPS.Administration.DAL.Services
             context.Entry(entity).State = EntityState.Added;
         }
 
+        public List<TEntity> GetLatest()
+        {
+            var firstRevision = _cachedEntities.Where(x => x.BaseId == 0);
+
+            List<TEntity> latestRevision = new List<TEntity>();
+
+            foreach (var rev in firstRevision)
+            {
+                var latest = GetSingle(x => x.BaseId == rev.Id);
+
+                if (latest == null)
+                {
+                    latestRevision.Add(rev);
+                }
+                else
+                {
+                    latestRevision.Add(latest);
+                }
+            }
+
+            return latestRevision;
+        }
+
         private void Add(TEntity entity)
         {
             _dbEntity.Add(entity);

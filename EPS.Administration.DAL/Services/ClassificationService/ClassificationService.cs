@@ -45,5 +45,13 @@ namespace EPS.Administration.DAL.Services.ClassificationService
             var classification = _classificationService.GetSingle(x => x.Id == id);
             return _mapper.Map<Classification>(classification);
         }
+
+        public List<Classification> Get()
+        {
+            var classificationsDto = _classificationService.GetLatest();
+
+            List<Classification> classifications = classificationsDto.Select(x => _mapper.Map<Classification>(x)).ToList();
+            return classifications;
+        }
     }
 }

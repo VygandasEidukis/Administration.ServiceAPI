@@ -1,11 +1,13 @@
 ﻿using EPS.Administration.DAL.Services.DeviceService;
 using EPS.Administration.Models.APICommunication;
 using EPS.Administration.Models.APICommunication.Filter;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EPS.Administration.ServiceAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class DevicesController : ControllerBase
     {
@@ -17,8 +19,7 @@ namespace EPS.Administration.ServiceAPI.Controllers
         }
 
         [HttpPost("GetFiltered")]
-
-        public ActionResult<GetDevicesResponse> GetDevices(string token, DeviceFilter filter)
+        public ActionResult<GetDevicesResponse> GetDevices(DeviceFilter filter)
         {
             var devices = _deviceService.Get(filter);
             var overall = _deviceService.BaseDeviceCount();
@@ -36,7 +37,23 @@ namespace EPS.Administration.ServiceAPI.Controllers
                 Overall = overall,
                 Pages = pages
             };
+        }
 
+        [HttpGet]
+        public ActionResult<DeviceResponse> Get(string serialNumber)
+        {
+            return new DeviceResponse()
+            {
+                RecievedDevice = _deviceService.Get(serialNumber)
+            };
+        }
+
+        [HttpGet("GetMetadata")]
+        public ActionResult<DeviceMetadataResponse> GetMetadata()
+        {
+            var metadata = _deviceService.GetMetadata();
+
+            return metadata;
         }
     }
 }
