@@ -22,5 +22,13 @@ namespace EPS.Administration.Models.Device
                 return "New event";
             }
         }
+
+        public DeviceEvent()
+        {
+            if (Date == DateTime.MinValue)
+            {
+                Date = DateTime.Now;
+            }
+        }
     }
 }

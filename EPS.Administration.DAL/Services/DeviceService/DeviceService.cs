@@ -8,6 +8,8 @@ using EPS.Administration.DAL.Services.DeviceModelService;
 using EPS.Administration.Models.APICommunication;
 using EPS.Administration.Models.APICommunication.Filter;
 using EPS.Administration.Models.Device;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,12 +46,11 @@ namespace EPS.Administration.DAL.Services.DeviceService
 
         public void AddOrUpdate(Device device)
         {
-            _deviceService.AddOrUpdate(_mapper.Map<DeviceData>(device));
+            AddOrUpdate(new[] { device });
         }
 
         public void AddOrUpdate(IEnumerable<Device> devices)
         {
-            int id = 0;
             try
             {
                 var dtoDevices = devices.Select(device => _mapper.Map<DeviceData>(device));
@@ -63,6 +64,8 @@ namespace EPS.Administration.DAL.Services.DeviceService
                 {
                     var item = _deviceService.GetSingle(x => x.SerialNumber == dto.SerialNumber);
                     dto.Id = item == null ? 0 : item.Id;
+                    dto.Revision = 0;
+                    dto.BaseId = 0;
 
                     dto.Status = null;
                     dto.OwnedBy = null;
@@ -72,10 +75,16 @@ namespace EPS.Administration.DAL.Services.DeviceService
                     
                     foreach (var eve in dto.DeviceEvents)
                     {
+                        eve.Id = 0;
+                        eve.BaseId = 0;
+                        eve.Revision = 0;
                         eve.Location = null;
                         eve.Status = null;
                     }
 
+                    string jsonString = JsonConvert.SerializeObject(dto);
+                    JToken parsedJson = JToken.Parse(jsonString);
+                    var beautified = parsedJson.ToString(Formatting.Indented);
 
                     _deviceService.AddOrUpdate(dto);
                 }
@@ -96,7 +105,7 @@ namespace EPS.Administration.DAL.Services.DeviceService
 
         public List<Device> Get(DeviceFilter filter)
         {
-            var devices = _deviceService.Get();
+            var devices = _deviceService.GetLatest();
 
             var mappedDevices = new List<Device>();
             foreach (var device in devices)

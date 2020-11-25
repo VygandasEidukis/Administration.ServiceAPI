@@ -34,6 +34,8 @@ namespace EPS.Administration.DAL.Services.DeviceEventService
 
         public void AddOrUpdate(DeviceEvent deviceEvent)
         {
+            deviceEvent.Location = null;
+            deviceEvent.Status = null;
             _deviceEventService.AddOrUpdate(_mapper.Map<DeviceEventData>(deviceEvent));
         }
 

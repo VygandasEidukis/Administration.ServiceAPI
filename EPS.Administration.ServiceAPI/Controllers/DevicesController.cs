@@ -1,8 +1,10 @@
 ﻿using EPS.Administration.DAL.Services.DeviceService;
 using EPS.Administration.Models.APICommunication;
 using EPS.Administration.Models.APICommunication.Filter;
+using EPS.Administration.Models.Device;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace EPS.Administration.ServiceAPI.Controllers
 {
@@ -54,6 +56,27 @@ namespace EPS.Administration.ServiceAPI.Controllers
             var metadata = _deviceService.GetMetadata();
 
             return metadata;
+        }
+
+        [HttpPost("AddOrUpdate")]
+        public ActionResult<BaseResponse> AddOrUpdateDevice(Device device)
+        {
+            try
+            {
+                _deviceService.AddOrUpdate(device);
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse()
+                {
+                    Error = ErrorCode.ServiceError,
+                    Message = ex.Message
+                };
+            }
+            return new BaseResponse()
+            {
+                Message = "Successfully added or updated the device"
+            };
         }
     }
 }

@@ -94,5 +94,18 @@ namespace EPS.Administration.Models.Device
         /// Additional notes
         /// </summary>
         public string AdditionalNotes { get; set; }
+
+        public Device()
+        {
+            if (SfDate == DateTime.MinValue)
+            {
+                SfDate = DateTime.Now;
+            }
+
+            if (AcquisitionDate == DateTime.MinValue)
+            {
+                AcquisitionDate = DateTime.Now;
+            }
+        }
     }
 }
