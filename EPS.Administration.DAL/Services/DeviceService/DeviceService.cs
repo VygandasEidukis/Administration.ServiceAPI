@@ -153,5 +153,29 @@ namespace EPS.Administration.DAL.Services.DeviceService
 
             return metadata;
         }
+
+        public GetLocationResponse GetLocation()
+        {
+            return new GetLocationResponse()
+            {
+                Locations = _locationService.Get()
+            };
+        }
+
+        public GetClassificationResponse GetClassification()
+        {
+            return new GetClassificationResponse()
+            {
+                Classifications = _classificationService.Get()
+            };
+        }
+
+        public GetStatusResponse GetStatus()
+        {
+            return new GetStatusResponse()
+            {
+                Statuses = _statusService.Get()
+            };
+        }
     }
 }

@@ -5,6 +5,7 @@ using EPS.Administration.Models.Device;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 
 namespace EPS.Administration.ServiceAPI.Controllers
 {
@@ -64,6 +65,11 @@ namespace EPS.Administration.ServiceAPI.Controllers
             try
             {
                 _deviceService.AddOrUpdate(device);
+
+                return new BaseResponse()
+                {
+                    Message = "Successfully added or updated the device"
+                };
             }
             catch (Exception ex)
             {
@@ -73,10 +79,24 @@ namespace EPS.Administration.ServiceAPI.Controllers
                     Message = ex.Message
                 };
             }
-            return new BaseResponse()
-            {
-                Message = "Successfully added or updated the device"
-            };
+        }
+
+        [HttpGet("Statuses")]
+        public ActionResult<GetStatusResponse> GetStatuses()
+        {
+            return _deviceService.GetStatus();
+        }
+
+        [HttpGet("Classifications")]
+        public ActionResult<GetClassificationResponse> GetClassifications()
+        {
+            return _deviceService.GetClassification();
+        }
+
+        [HttpGet("Locations")]
+        public ActionResult<GetLocationResponse> GetLocations()
+        {
+            return _deviceService.GetLocation();
         }
     }
 }

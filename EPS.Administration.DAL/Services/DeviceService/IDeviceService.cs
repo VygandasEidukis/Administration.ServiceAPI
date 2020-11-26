@@ -13,5 +13,8 @@ namespace EPS.Administration.DAL.Services.DeviceService
         List<Device> Get(DeviceFilter filter);
         int BaseDeviceCount();
         DeviceMetadataResponse GetMetadata();
+        GetLocationResponse GetLocation();
+        GetClassificationResponse GetClassification();
+        GetStatusResponse GetStatus();
     }
 }
