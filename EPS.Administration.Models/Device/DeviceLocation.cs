@@ -10,7 +10,7 @@
 
         public override string ToString()
         {
-            return Name;
+            return Name ?? "New location";
         }
 
         public override bool Equals(object obj)

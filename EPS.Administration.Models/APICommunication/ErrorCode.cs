@@ -6,5 +6,6 @@
         InternalError = 1,
         BadUsernameOrPassword = 2,
         ServiceError = 3,
+        ValidationError = 4,
     }
 }

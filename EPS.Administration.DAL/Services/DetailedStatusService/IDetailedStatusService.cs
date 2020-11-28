@@ -8,8 +8,8 @@ namespace EPS.Administration.DAL.Services.DetailedStatusService
     {
         void AddOrUpdate(DetailedStatus status);
         void AddOrUpdate(IEnumerable<DetailedStatus> statuses);
-        DetailedStatus GetStatus(string status);
+        DetailedStatus Get(string status);
         List<DetailedStatus> Get();
-        DetailedStatus GetStatus(int id);
+        DetailedStatus Get(int id);
     }
 }

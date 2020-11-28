@@ -20,6 +20,7 @@ namespace EPS.Administration.DAL.Services.DeviceLocationService
         public void AddOrUpdate(DeviceLocation classification)
         {
             _deviceLocationService.AddOrUpdate(_mapper.Map<DeviceLocationData>(classification));
+            _deviceLocationService.Save();
         }
 
         public void AddOrUpdate(IEnumerable<DeviceLocation> locations)

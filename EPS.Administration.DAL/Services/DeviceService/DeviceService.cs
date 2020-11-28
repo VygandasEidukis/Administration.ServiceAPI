@@ -177,5 +177,97 @@ namespace EPS.Administration.DAL.Services.DeviceService
                 Statuses = _statusService.Get()
             };
         }
+
+        public void UpdateModels(DeviceModel model, DeviceModel oldModel)
+        {
+            var devicesWithModel = _deviceService.GetLatest().Where(device => device.Model.Id == oldModel.Id);
+
+            foreach (var device in devicesWithModel)
+            {
+                var dev = _mapper.Map<Device>(device);
+                dev.Model = model;
+                AddOrUpdate(dev);
+            }
+        }
+
+        public void UpdateLocations(DeviceLocation newLocation, DeviceLocation oldLocation)
+        {
+            var devicesWithLocation = _deviceService.GetLatest()
+                .Where(device => device.InitialLocation.Id == oldLocation.Id
+                || device.OwnedBy.Id == oldLocation.Id
+                || device.DeviceEvents != null
+                   && device.DeviceEvents.Any(even => even.Location != null
+                       && even.Location.Id == oldLocation.Id));
+
+            foreach (var device in devicesWithLocation)
+            {
+                var dev = _mapper.Map<Device>(device);
+
+                if (dev.OwnedBy.Id == oldLocation.Id)
+                {
+                    dev.OwnedBy = newLocation;
+                }
+
+                if (dev.InitialLocation.Id == oldLocation.Id)
+                {
+                    dev.InitialLocation = newLocation;
+                }
+
+                if (dev.DeviceEvents != null && dev.DeviceEvents.Any(x => x.Location.Id == oldLocation.Id))
+                {
+                    foreach (var even in dev.DeviceEvents)
+                    {
+                        if (even.Location != null && even.Location.Id == oldLocation.Id)
+                        {
+                            even.Location = newLocation;
+                        }
+                    }
+                }
+                AddOrUpdate(dev);
+            }
+        }
+
+        public void UpdateClassifications(Classification newClassification, Classification oldClassification)
+        {
+            var devicesWithClassification = _deviceService.GetLatest().Where(device => device.Classification.Id == oldClassification.Id);
+
+            foreach (var device in devicesWithClassification)
+            {
+                var dev = _mapper.Map<Device>(device);
+                dev.Classification = newClassification;
+                AddOrUpdate(dev);
+            }
+        }
+
+        public void UpdateStatuses(DetailedStatus newStatus, DetailedStatus oldStatus)
+        {
+            var devicesWithStatus = _deviceService.GetLatest()
+                            .Where(device => device.Status.Id == oldStatus.Id
+                            || device.DeviceEvents != null
+                               && device.DeviceEvents.Any(even => even.Status != null
+                               && even.Status.Id == oldStatus.Id));
+
+            foreach (var device in devicesWithStatus)
+            {
+                var dev = _mapper.Map<Device>(device);
+
+                if (dev.Status.Id == oldStatus.Id)
+                {
+                    dev.Status = newStatus;
+                }
+
+                if (dev.DeviceEvents != null && dev.DeviceEvents.Any(x => x.Status.Id == oldStatus.Id))
+                {
+                    foreach (var even in dev.DeviceEvents)
+                    {
+                        if (even.Status != null && even.Status.Id == oldStatus.Id)
+                        {
+                            even.Status = newStatus;
+                        }
+                    }
+                }
+                AddOrUpdate(dev);
+            }
+        }
     }
 }

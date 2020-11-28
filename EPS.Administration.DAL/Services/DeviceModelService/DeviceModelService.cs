@@ -20,6 +20,7 @@ namespace EPS.Administration.DAL.Services.DeviceModelService
         public void AddOrUpdate(DeviceModel model)
         {
             _deviceModelService.AddOrUpdate(_mapper.Map<DeviceModelData>(model));
+            _deviceModelService.Save();
         }
 
         public void AddOrUpdate(IEnumerable<DeviceModel> models)
@@ -48,7 +49,7 @@ namespace EPS.Administration.DAL.Services.DeviceModelService
             return models;
         }
 
-        public DeviceModel GetById(int id)
+        public DeviceModel Get(int id)
         {
             var modelData = _deviceModelService.GetSingle(x => x.Id == id);
             return _mapper.Map<DeviceModel>(modelData);

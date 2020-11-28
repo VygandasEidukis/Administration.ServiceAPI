@@ -182,7 +182,7 @@ namespace EPS.Administration.Controllers.FileController
                         //TODO HIGH Add Log
                         continue;
                     }
-                    var status = _statusService.GetStatus(statusText);
+                    var status = _statusService.Get(statusText);
 
                     if (status == null)
                     {
@@ -274,7 +274,7 @@ namespace EPS.Administration.Controllers.FileController
                     times++;
                     continue;
                 }
-                var status = _statusService.GetStatus(statusText);
+                var status = _statusService.Get(statusText);
 
                 if (status == null)
                 {

@@ -16,5 +16,9 @@ namespace EPS.Administration.DAL.Services.DeviceService
         GetLocationResponse GetLocation();
         GetClassificationResponse GetClassification();
         GetStatusResponse GetStatus();
+        void UpdateModels(DeviceModel model, DeviceModel oldModel);
+        void UpdateLocations(DeviceLocation newLocation, DeviceLocation oldLocation);
+        void UpdateClassifications(Classification newClassification, Classification oldClassification);
+        void UpdateStatuses(DetailedStatus newStatus, DetailedStatus oldStatus);
     }
 }

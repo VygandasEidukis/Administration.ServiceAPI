@@ -20,6 +20,7 @@ namespace EPS.Administration.DAL.Services.ClassificationService
         public void AddOrUpdate(Classification classification)
         {
             _classificationService.AddOrUpdate(_mapper.Map<ClassificationData>(classification));
+            _classificationService.Save();
         }
 
         public void AddOrUpdate(IEnumerable<Classification> classifications)

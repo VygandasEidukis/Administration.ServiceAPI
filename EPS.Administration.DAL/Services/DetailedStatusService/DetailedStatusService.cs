@@ -43,13 +43,13 @@ namespace EPS.Administration.DAL.Services.DetailedStatusService
             return statuses;
         }
 
-        public DetailedStatus GetStatus(string status)
+        public DetailedStatus Get(string status)
         {
             var item = _detailedStatusService.GetSingle(x => x.Status == status);
             return _mapper.Map<DetailedStatus>(item);
         }
 
-        public DetailedStatus GetStatus(int id)
+        public DetailedStatus Get(int id)
         {
             var item = _detailedStatusService.GetSingle(x => x.Id == id);
             return _mapper.Map<DetailedStatus>(item);
