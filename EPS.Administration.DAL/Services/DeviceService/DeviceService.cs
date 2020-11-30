@@ -5,6 +5,7 @@ using EPS.Administration.DAL.Services.DetailedStatusService;
 using EPS.Administration.DAL.Services.DeviceEventService;
 using EPS.Administration.DAL.Services.DeviceLocationService;
 using EPS.Administration.DAL.Services.DeviceModelService;
+using EPS.Administration.DAL.Services.FileDefinitionService;
 using EPS.Administration.Models.APICommunication;
 using EPS.Administration.Models.APICommunication.Filter;
 using EPS.Administration.Models.Device;
@@ -25,6 +26,7 @@ namespace EPS.Administration.DAL.Services.DeviceService
         private readonly IDeviceLocationService _locationService;
         private readonly IDeviceModelService _modelService;
         private readonly IDeviceEventService _deviceEventService;
+        private readonly IFileDefinitionService _fileDefinitionService;
         private readonly IMapper _mapper;
 
         public DeviceService(IBaseService<DeviceData> baseService,
@@ -33,6 +35,7 @@ namespace EPS.Administration.DAL.Services.DeviceService
                              IDeviceLocationService locationService,
                              IDeviceModelService modelService,
                              IDeviceEventService deviceEventService,
+                             IFileDefinitionService fileDefinitionService,
                              IMapper mapper)
         {
             _deviceService = baseService;
@@ -41,6 +44,7 @@ namespace EPS.Administration.DAL.Services.DeviceService
             _locationService = locationService;
             _modelService = modelService;
             _deviceEventService = deviceEventService;
+             _fileDefinitionService = fileDefinitionService;
             _mapper = mapper;
         }
 
@@ -99,8 +103,10 @@ namespace EPS.Administration.DAL.Services.DeviceService
 
         public Device Get(string serialNumber)
         {
-            var device = _deviceService.GetSingle(x => x.SerialNumber == serialNumber);
-            return _mapper.Map<Device>(device);
+            var deviceDto = _deviceService.GetSingle(x => x.SerialNumber == serialNumber);
+            var device = _mapper.Map<Device>(deviceDto);
+
+            return device;
         }
 
         public List<Device> Get(DeviceFilter filter)
@@ -138,7 +144,7 @@ namespace EPS.Administration.DAL.Services.DeviceService
 
         public int BaseDeviceCount()
         {
-            return _deviceService.Get().Where(x => x.BaseId == 0).Count();
+            return _deviceService.Count();
         }
 
         public DeviceMetadataResponse GetMetadata()

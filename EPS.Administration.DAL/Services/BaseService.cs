@@ -69,7 +69,7 @@ namespace EPS.Administration.DAL.Services
             _dbEntity.Remove(model);
         }
 
-        public List<TEntity> Get()
+        private List<TEntity> Get()
         {
             return _dbEntity.ToList();
         }
@@ -144,6 +144,11 @@ namespace EPS.Administration.DAL.Services
         public DeviceContext GetContext()
         {
             return context;
+        }
+
+        public int Count()
+        {
+            return _cachedEntities.Where(x => x.BaseId == 0).Count();
         }
     }
 }

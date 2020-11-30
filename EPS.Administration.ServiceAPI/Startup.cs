@@ -6,6 +6,7 @@ using EPS.Administration.DAL.Services.DeviceEventService;
 using EPS.Administration.DAL.Services.DeviceLocationService;
 using EPS.Administration.DAL.Services.DeviceModelService;
 using EPS.Administration.DAL.Services.DeviceService;
+using EPS.Administration.DAL.Services.FileDefinitionService;
 using EPS.Administration.ServiceAPI.Helper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
@@ -47,6 +48,7 @@ namespace EPS.Administration.ServiceAPI
             services.AddScoped<IDeviceLocationService, DeviceLocationService>();
             services.AddScoped<IDeviceService, DeviceService>();
             services.AddScoped<IDeviceEventService, DeviceEventService>();
+            services.AddScoped<IFileDefinitionService, FileDefinitionService>();
 
             services.AddAutoMapper(typeof(Startup));
         }

@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using EPS.Administration.Controllers.FileController;
 using EPS.Administration.DAL.Services.ClassificationService;
@@ -7,10 +9,12 @@ using EPS.Administration.DAL.Services.DeviceLocationService;
 using EPS.Administration.DAL.Services.DeviceModelService;
 using EPS.Administration.DAL.Services.DeviceService;
 using EPS.Administration.Models.APICommunication;
+using EPS.Administration.Models.Device;
 using EPS.Administration.Models.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,18 +30,22 @@ namespace EPS.Administration.ServiceAPI.Controllers
         private readonly IDeviceModelService _deviceModelService;
         private readonly IDeviceLocationService _deviceLocationService;
         private readonly IDeviceService _deviceService;
+        private readonly string _documentStoragePath;
 
         public FilesController( IDetailedStatusService statusService, 
                                 IClassificationService classification, 
                                 IDeviceModelService modelService,
                                 IDeviceLocationService locationSerivce,
-                                IDeviceService deviceService)
+                                IDeviceService deviceService,
+                                IConfiguration configuration)
         {
             _statusService = statusService;
             _groupingService = classification;
             _deviceModelService = modelService;
             _deviceLocationService = locationSerivce;
             _deviceService = deviceService;
+
+            _documentStoragePath = configuration["DocumentStorage"];
         }
 
         [AllowAnonymous]
@@ -80,6 +88,31 @@ namespace EPS.Administration.ServiceAPI.Controllers
                     Error = ErrorCode.InternalError
                 };
             }
+        }
+
+        [HttpPost("Document")]
+        public async Task<ActionResult<FileUploadResponse>> UploadDocument([FromForm] IFormFile file)
+        {
+            string result = Path.GetRandomFileName().Split('.').First();
+            string storedFileName = $"{result}.{file.FileName.Split('.').Last()}";
+            string filePath = Path.Combine(_documentStoragePath, storedFileName);
+
+            FileInfo directory = new FileInfo(filePath);
+            directory.Directory.Create();
+
+            using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+
+            return new FileUploadResponse
+            {
+                UploadedFileInfo = new FileDefinition()
+                {
+                    FileName = file.FileName,
+                    StoredFileName = storedFileName,
+                }
+            };
         }
     }
 }

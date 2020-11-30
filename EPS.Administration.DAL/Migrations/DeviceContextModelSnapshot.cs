@@ -86,6 +86,9 @@ namespace EPS.Administration.DAL.Migrations
                     b.Property<int?>("ClassificationId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("DocumentId")
+                        .HasColumnType("int");
+
                     b.Property<int>("InitialLocationId")
                         .HasColumnType("int");
 
@@ -119,6 +122,8 @@ namespace EPS.Administration.DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClassificationId");
+
+                    b.HasIndex("DocumentId");
 
                     b.HasIndex("InitialLocationId");
 
@@ -218,11 +223,39 @@ namespace EPS.Administration.DAL.Migrations
                     b.ToTable("DeviceModels");
                 });
 
+            modelBuilder.Entity("EPS.Administration.DAL.Data.FileDefinitionData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BaseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Revision")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StoredFileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FileDefinition");
+                });
+
             modelBuilder.Entity("EPS.Administration.DAL.Data.DeviceData", b =>
                 {
                     b.HasOne("EPS.Administration.DAL.Data.ClassificationData", "Classification")
                         .WithMany()
                         .HasForeignKey("ClassificationId");
+
+                    b.HasOne("EPS.Administration.DAL.Data.FileDefinitionData", "Document")
+                        .WithMany()
+                        .HasForeignKey("DocumentId");
 
                     b.HasOne("EPS.Administration.DAL.Data.DeviceLocationData", "InitialLocation")
                         .WithMany()

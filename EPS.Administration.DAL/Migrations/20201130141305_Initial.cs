@@ -56,6 +56,22 @@ namespace EPS.Administration.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FileDefinition",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Revision = table.Column<int>(nullable: false),
+                    BaseId = table.Column<int>(nullable: false),
+                    FileName = table.Column<string>(nullable: true),
+                    StoredFileName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FileDefinition", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Statuses",
                 columns: table => new
                 {
@@ -90,7 +106,8 @@ namespace EPS.Administration.DAL.Migrations
                     InitialLocationId = table.Column<int>(nullable: false),
                     SfDate = table.Column<DateTime>(nullable: false),
                     SfNumber = table.Column<string>(nullable: true),
-                    AdditionalNotes = table.Column<string>(nullable: true)
+                    AdditionalNotes = table.Column<string>(nullable: true),
+                    DocumentId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -99,6 +116,12 @@ namespace EPS.Administration.DAL.Migrations
                         name: "FK_Devices_Classifications_ClassificationId",
                         column: x => x.ClassificationId,
                         principalTable: "Classifications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Devices_FileDefinition_DocumentId",
+                        column: x => x.DocumentId,
+                        principalTable: "FileDefinition",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -149,7 +172,7 @@ namespace EPS.Administration.DAL.Migrations
                         column: x => x.DeviceDataId,
                         principalTable: "Devices",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_DeviceEvents_DeviceLocations_LocationId",
                         column: x => x.LocationId,
@@ -185,6 +208,11 @@ namespace EPS.Administration.DAL.Migrations
                 column: "ClassificationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Devices_DocumentId",
+                table: "Devices",
+                column: "DocumentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Devices_InitialLocationId",
                 table: "Devices",
                 column: "InitialLocationId");
@@ -215,6 +243,9 @@ namespace EPS.Administration.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Classifications");
+
+            migrationBuilder.DropTable(
+                name: "FileDefinition");
 
             migrationBuilder.DropTable(
                 name: "DeviceLocations");

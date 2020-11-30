@@ -95,6 +95,11 @@ namespace EPS.Administration.Models.Device
         /// </summary>
         public string AdditionalNotes { get; set; }
 
+        /// <summary>
+        /// Document that was received from purchase
+        /// </summary>
+        public FileDefinition Document { get; set; }
+
         public Device()
         {
             if (SfDate == DateTime.MinValue)

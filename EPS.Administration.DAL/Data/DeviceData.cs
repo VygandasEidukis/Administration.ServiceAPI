@@ -24,11 +24,13 @@ namespace EPS.Administration.DAL.Data
         public DateTime SfDate { get; set; }
         public string SfNumber { get; set; }
         public string AdditionalNotes { get; set; }
+        public int? DocumentId { get; set; }
 
         public DetailedStatusData Status { get; set; }
         public DeviceModelData Model { get; set; }
         public ClassificationData Classification { get; set; }
         public DeviceLocationData InitialLocation { get; set; }
         public DeviceLocationData OwnedBy { get; set; }
+        public FileDefinitionData Document { get; set; }
     }
 }
