@@ -112,5 +112,10 @@ namespace EPS.Administration.Models.Device
                 AcquisitionDate = DateTime.Now;
             }
         }
+
+        public override string ToString()
+        {
+            return string.IsNullOrEmpty(SerialNumber) ? "New device" : SerialNumber;
+        }
     }
 }

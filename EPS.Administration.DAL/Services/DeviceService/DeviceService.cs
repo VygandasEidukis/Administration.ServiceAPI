@@ -76,6 +76,7 @@ namespace EPS.Administration.DAL.Services.DeviceService
                     dto.InitialLocation = null;
                     dto.Classification = null;
                     dto.Model = null;
+                    dto.Document = null;
                     
                     foreach (var eve in dto.DeviceEvents)
                     {

@@ -9,7 +9,18 @@ namespace EPS.Administration.DAL.Mapping
         public DeviceMapping()
         {
             CreateMap<DeviceData, Device>();
-            CreateMap<Device, DeviceData>();
+            CreateMap<Device, DeviceData>()
+                .AfterMap((a, b)=>
+                {
+                    if (a.Classification != null)
+                        b.ClassificationId = a.Classification.Id;
+
+                    if (a.Model != null)
+                        b.ModelId = a.Model.Id;
+
+                    if (a.InitialLocation != null)
+                        b.InitialLocationId = a.InitialLocation.Id;
+                });
 
             CreateMap<DeviceEventData, DeviceEvent>();
             CreateMap<DeviceEvent, DeviceEventData>();
