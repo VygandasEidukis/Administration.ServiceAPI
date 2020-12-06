@@ -22,22 +22,22 @@ namespace EPS.Administration.Models.APICommunication.Filter
 
             if (!string.IsNullOrEmpty(SerialNumberFilter))
             {
-                queries.Add($"x.SerialNumber.StartsWith(\"{ SerialNumberFilter }\")");
+                queries.Add($"x.SerialNumber.ToLower().StartsWith(\"{ SerialNumberFilter.ToLower() }\")");
             }
 
             if (!string.IsNullOrEmpty(ModelFilter))
             {
-                queries.Add($"x.Model.Name.StartsWith(\"{ ModelFilter }\")");
+                queries.Add($"x.Model.Name.ToLower().StartsWith(\"{ ModelFilter.ToLower() }\")");
             }
 
             if (!string.IsNullOrEmpty(ClassificationFilter))
             {
-                queries.Add($"x.Classification.Model.StartsWith(\"{ ClassificationFilter }\")");
+                queries.Add($"x.Classification.Model.ToLower().StartsWith(\"{ ClassificationFilter.ToLower() }\")");
             }
 
             if (!string.IsNullOrEmpty(LastUpdateFilter))
             {
-                queries.Add($"x.LastUpdate.StartsWith(\"{LastUpdateFilter}\")");
+                queries.Add($"x.LastUpdate.ToLower().StartsWith(\"{LastUpdateFilter.ToLower()}\")");
             }
 
             if (!string.IsNullOrEmpty(EventsCountFilter))
