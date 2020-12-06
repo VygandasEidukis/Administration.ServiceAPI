@@ -18,5 +18,9 @@
     <ProjectReference Include="..\EPS.Administration.Models\EPS.Administration.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Documents\" />
+  </ItemGroup>
+
 
 </Project>
