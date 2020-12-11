@@ -110,6 +110,7 @@ namespace EPS.Administration.DAL.Services.DeviceService
             return device;
         }
 
+        //Get devices by filter
         public List<Device> Get(DeviceFilter filter)
         {
             var devices = _deviceService.GetLatest();
@@ -119,7 +120,7 @@ namespace EPS.Administration.DAL.Services.DeviceService
             {
                 mappedDevices.Add(_mapper.Map<Device>(device));
             }
-
+            
             var qDevices = mappedDevices.AsQueryable();
             var query = filter.GetQuery();
 
