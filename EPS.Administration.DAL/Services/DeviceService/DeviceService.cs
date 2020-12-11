@@ -110,7 +110,11 @@ namespace EPS.Administration.DAL.Services.DeviceService
             return device;
         }
 
-        //Get devices by filter
+        /// <summary>
+        /// Get devices by filter
+        /// </summary>
+        /// <param name="filter">Filters that will apply on search</param>
+        /// <returns>Filtered promotions</returns>
         public List<Device> Get(DeviceFilter filter)
         {
             var devices = _deviceService.GetLatest();
