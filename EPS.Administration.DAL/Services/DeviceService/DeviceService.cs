@@ -71,13 +71,6 @@ namespace EPS.Administration.DAL.Services.DeviceService
                     dto.Revision = 0;
                     dto.BaseId = 0;
 
-                    dto.Status = null;
-                    dto.OwnedBy = null;
-                    dto.InitialLocation = null;
-                    dto.Classification = null;
-                    dto.Model = null;
-                    dto.Document = null;
-                    
                     foreach (var eve in dto.DeviceEvents)
                     {
                         eve.Id = 0;

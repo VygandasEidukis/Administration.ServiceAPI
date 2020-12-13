@@ -21,7 +21,7 @@
 
         public override string ToString()
         {
-            return Model;
+            return string.IsNullOrEmpty(Model) ? "New Classification" : Model;
         }
 
         public override bool Equals(object obj)

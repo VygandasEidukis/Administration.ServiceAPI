@@ -17,7 +17,7 @@
 
         public override string ToString()
         {
-            return Status;
+            return string.IsNullOrEmpty(Status) ? "New status" : Status;
         }
 
         public override bool Equals(object obj)

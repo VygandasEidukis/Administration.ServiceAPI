@@ -9,7 +9,7 @@
 
         public override string ToString()
         {
-            return Name;
+            return string.IsNullOrEmpty(Name) ? "New model" : Name;
         }
 
         public override bool Equals(object obj)
