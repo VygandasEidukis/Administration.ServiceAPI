@@ -80,10 +80,6 @@ namespace EPS.Administration.DAL.Services.DeviceService
                         eve.Status = null;
                     }
 
-                    string jsonString = JsonConvert.SerializeObject(dto);
-                    JToken parsedJson = JToken.Parse(jsonString);
-                    var beautified = parsedJson.ToString(Formatting.Indented);
-
                     _deviceService.AddOrUpdate(dto);
                 }
                 _deviceService.Save();
