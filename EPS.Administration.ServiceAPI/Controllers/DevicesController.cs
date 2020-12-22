@@ -236,5 +236,11 @@ namespace EPS.Administration.ServiceAPI.Controllers
                 };
             }
         }
+
+        [HttpPost("GetReportDevices")]
+        public ActionResult<List<Device>> GetReportedDevices(DeviceMetadataResponseWithDates deviceMetadata)
+        {
+            return _deviceService.Get(deviceMetadata);
+        }
     }
 }

@@ -132,6 +132,59 @@ namespace EPS.Administration.DAL.Services.DeviceService
             return qDevices.Skip(filter.PageSize * filter.Page).Take(filter.PageSize).ToList();
         }
 
+        public List<Device> Get(DeviceMetadataResponseWithDates deviceMetadata)
+        {
+            var devices = _deviceService.GetLatest().AsQueryable();
+            devices = devices.Where(x => x.DeviceEvents.Any(y => y.Date >= deviceMetadata.DateFrom && y.Date <= deviceMetadata.DateTill));
+
+            foreach (var device in devices)
+            {
+                device.DeviceEvents = device.DeviceEvents.Where(y => y.Date >= deviceMetadata.DateFrom && y.Date <= deviceMetadata.DateTill).ToList();
+            }
+
+            if (deviceMetadata.Metadatas.Classifications.Any())
+            {
+                devices = devices.Where(x => deviceMetadata.Metadatas.Classifications.Any(y => y.Id == x.ClassificationId));
+            } 
+            else
+            {
+                devices = devices.Where(x => x.Classification == null);
+            }
+
+            if (deviceMetadata.Metadatas.Locations.Any())
+            {
+                devices = devices.Where(device => device.DeviceEvents.Any(deviceEvent => deviceMetadata.Metadatas.Locations
+                                    .Any(metadataLocation => metadataLocation.Id == deviceEvent.LocationId)));
+            }
+            else
+            {
+                devices =devices.Where(device => device.DeviceEvents.Any(deviceEvent => deviceEvent.Location == null));
+            }
+
+            if (deviceMetadata.Metadatas.Models.Any())
+            {
+                devices = devices.Where(device => deviceMetadata.Metadatas.Models.Any(metaModel => metaModel.Id == device.ModelId));
+            }
+            else
+            {
+                devices = devices.Where(device => device.Model == null);
+            }
+
+            if (deviceMetadata.Metadatas.Statuses.Any())
+            {
+                devices = devices.Where(device => device.DeviceEvents.Any(deviceEvent => deviceMetadata.Metadatas.Statuses.Any(metaStatus => metaStatus.Id == deviceEvent.StatusId)));
+            }
+            else
+            {
+                devices = devices.Where(device => device.DeviceEvents.Any(eve => eve.Status == null));
+            }
+
+            devices = devices.Where(x => x.DeviceEvents.Count() > 0);
+            devices.ToList();
+
+            return _mapper.Map<List<Device>>(_deviceService.Get(x => devices.Any(y => y.Id == x.Id)));
+        }
+
         public int BaseDeviceCount()
         {
             return _deviceService.Count();

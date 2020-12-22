@@ -44,9 +44,19 @@ namespace EPS.Administration.Models.Device
         {
             get
             {
-                return DeviceEvents == null || DeviceEvents.Count == 0 ? 
-                    AcquisitionDate.ToString("yyyy-MM-dd") : 
-                    DeviceEvents[DeviceEventsCount-1].Date.ToString("yyyy-MM-dd");
+                return DeviceEvents == null || DeviceEvents.Count == 0 ?
+                    AcquisitionDate.ToString("MM/dd/yyy") : 
+                    DeviceEvents[DeviceEventsCount-1].Date.ToString("MM/dd/yyy");
+            }
+        }
+
+        public string LastStatus
+        {
+            get
+            {
+                return DeviceEvents == null || DeviceEvents.Count == 0 ?
+                    "No events" :
+                    DeviceEvents[DeviceEventsCount - 1].Status.Status.ToUpper();
             }
         }
 

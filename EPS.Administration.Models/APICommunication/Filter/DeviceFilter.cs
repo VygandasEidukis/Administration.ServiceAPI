@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace EPS.Administration.Models.APICommunication.Filter
 {
@@ -13,6 +14,7 @@ namespace EPS.Administration.Models.APICommunication.Filter
         public string ClassificationFilter { get; set; }
         public string EventsCountFilter { get; set; }
         public string LastUpdateFilter { get; set; }
+        public string LastStatusFilter { get; set; }
         public string OrderBy { get; set; }
         public bool ReverseOrder { get; set; }
 
@@ -37,12 +39,20 @@ namespace EPS.Administration.Models.APICommunication.Filter
 
             if (!string.IsNullOrEmpty(LastUpdateFilter))
             {
-                queries.Add($"x.LastUpdate.ToLower().StartsWith(\"{LastUpdateFilter.ToLower()}\")");
+                if (DateTime.TryParse(LastUpdateFilter, out var result))
+                {
+                    queries.Add($"DateTime.Parse(x.LastUpdate) >= DateTime.Parse(\"{result.ToString("MM/dd/yyyy")}\")");
+                }
             }
 
             if (!string.IsNullOrEmpty(EventsCountFilter))
             {
                 queries.Add($"x.DeviceEvents.Count() >= { EventsCountFilter }");
+            }
+
+            if(!string.IsNullOrEmpty(LastStatusFilter))
+            {
+                queries.Add($"x.LastStatus.ToLower().StartsWith(\"{LastStatusFilter.ToLower()}\")");
             }
 
             string query = InitializeQuery;

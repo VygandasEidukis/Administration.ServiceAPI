@@ -11,6 +11,7 @@ namespace EPS.Administration.DAL.Services.DeviceService
         void AddOrUpdate(IEnumerable<Device> devices);
         Device Get(string serialNumber);
         List<Device> Get(DeviceFilter filter);
+        List<Device> Get(DeviceMetadataResponseWithDates deviceMetadata);
         int BaseDeviceCount();
         DeviceMetadataResponse GetMetadata();
         GetLocationResponse GetLocation();
