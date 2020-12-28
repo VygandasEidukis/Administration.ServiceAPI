@@ -26,7 +26,7 @@ namespace EPS.Administration.ServiceAPI.Controllers
         public async Task<IActionResult> Authenticate([FromBody] User model)
         {
             var user = await _userService.Authenticate(model.Username, model.Password);
-
+            
             if (user == null)
             {
                 //TODO: MEDIUM Add logging.

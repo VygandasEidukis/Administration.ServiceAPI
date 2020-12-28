@@ -50,6 +50,11 @@ namespace EPS.Administration.ServiceAPI.Helper
 
         internal static string Decrypt(string password, string key)
         {
+            if (password.Length < 20)
+            {
+                return password;
+            }
+
             Aes encryptor = Aes.Create();
 
             encryptor.Mode = CipherMode.CBC;

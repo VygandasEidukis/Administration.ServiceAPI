@@ -68,11 +68,20 @@ namespace EPS.Administration.ServiceAPI.Helper
                     continue;
                 }
 
+                string keyStorage = _configuration.GetValue<string>("KeyStorage");
+                string key = KeyStorageHelper.GetKey(keyStorage);
+
+                if (string.IsNullOrEmpty(key))
+                {
+                    _logger.LogError($"No key storage set in storage '{keyStorage ?? ""}'");
+                    continue;
+                }
+
                 var newUser = new User
                 {
                     Id = id,
                     Username = username.Value,
-                    Password = password.Value
+                    Password = EncryptionHelper.Decrypt(password.Value, key)
                 };
                 _users.Add(newUser);
             }
@@ -80,16 +89,7 @@ namespace EPS.Administration.ServiceAPI.Helper
 
         public async Task<User> Authenticate(string username, string password)
         {
-            string keyStorage = _configuration.GetValue<string>("KeyStorage");
-            string key = KeyStorageHelper.GetKey(keyStorage);
-
-            if (string.IsNullOrEmpty(key))
-            {
-                _logger.LogError($"No key storage set in storage '{keyStorage ?? ""}'");
-                return null;
-            }
-
-            var user = await Task.Run(() => _users.SingleOrDefault(x => x.Username.ToLower() == username.ToLower() && EncryptionHelper.Decrypt(x.Password, key) == password));
+            var user = await Task.Run(() => _users.SingleOrDefault(x => x.Username.ToLower() == username.ToLower() && x.Password == password));
             // return null if user not found
             if (user == null)
                 return null;
